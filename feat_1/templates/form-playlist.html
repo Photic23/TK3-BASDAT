@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <style>
+        .bg-blur {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock meta %}
+
+{% block content %}
+  <div class="bg-blur">
+    <div class="flex justify-center items-center h-screen bg-blur">
+      <div class="max-w-xl mx-auto bg-white bg-opacity-80 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h1 class="text-4xl font-bold mb-4">Add new playlist</h1>
+        <form>
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="judul">
+              Judul
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="judul" type="text" placeholder="Masukkan judul">
+          </div>
+          <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="deskripsi">
+              Deskripsi
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="deskripsi" type="textarea" placeholder="Masukkan deskripsi untuk playlist">
+          </div>
+          <div class="flex items-center justify-between">
+            <a href="{% url 'feat_1:daftar_playlist_page' %}">
+              <button class="bg-gray-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                Back
+              </button>
+            </a>
+            <a href="">
+              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                Submit
+              </button>
+            </a>
+          </div>
+        </form>
+        <p class="text-center text-gray-500 text-xs mt-4">
+          &copy;Basis Data C, Kelompok - 3.
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

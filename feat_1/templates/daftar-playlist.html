@@ -1,6 +1,21 @@
-<h1>Shopping List Page</h1>
+{% extends 'base.html' %}
 
-<h5>Name: </h5>
-<p>Pak Bepe</p> <!-- Ubahlah sesuai dengan nama kamu -->
-<h5>Class: </h5>
-<p>PBP A</p> <!-- Ubahlah sesuai dengan kelas kamu -->
+{% block meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock meta %}
+
+{% block content %}
+    <div class="flex flex-col justify-center items-center gap-2">
+        <h1 class="text-2xl font-bold p-1">{{ username }}'s playlist</h1>
+
+        <div class="flex flex-col justify-center items-center gap-2 h-screen">
+            {% comment %} {% if user.daftar_playlist %} {% endcomment %}
+            <h2 class="p-2 text-center">Anda belum memiliki playlist apapun</h2>
+            <!-- Modal toggle -->
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Tambah playlist
+            </button>
+            
+        </div>
+    </div>
+{% endblock content %}
