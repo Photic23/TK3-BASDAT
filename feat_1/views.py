@@ -14,3 +14,8 @@ def add_playlist(request):
     }
     return render(request, 'form-playlist.html', context)
 
+def add_subscription(request):
+    context = {
+        'username': "Scarletra",
+    }
+    return render(request, 'langganan-paket.html', context)
