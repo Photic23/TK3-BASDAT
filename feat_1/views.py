@@ -19,3 +19,9 @@ def add_subscription(request):
         'username': "Scarletra",
     }
     return render(request, 'langganan-paket.html', context)
+
+def pay_subscription(request):
+    context = {
+        'username': "Scarletra",
+    }
+    return render(request, 'pembayaran-paket.html', context)
