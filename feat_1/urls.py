@@ -1,5 +1,5 @@
 from django.urls import path
-from feat_1.views import daftar_playlist_page, add_playlist
+from feat_1.views import daftar_playlist_page, add_playlist, test_searchbar
 from feat_1.views import add_subscription, pay_subscription, subscription_history
 
 app_name = 'feat_1'
@@ -10,4 +10,5 @@ urlpatterns = [
     path('add-subscription/', add_subscription, name='add_subscription'),
     path('pay-subscription/', pay_subscription, name='pay_subscription'),
     path('subscription-history/', subscription_history, name='subscription_history'),
+    path('test-searchbar/', test_searchbar, name='test_searchbar'),
 ]

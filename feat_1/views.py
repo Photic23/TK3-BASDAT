@@ -31,3 +31,9 @@ def subscription_history(request):
         'username': "Scarletra",
     }
     return render(request, 'riwayat-langganan.html', context)
+
+def test_searchbar(request):
+    context = {
+        'username': "Scarletra",
+    }
+    return render(request, 'search-bar-code.html', context)
