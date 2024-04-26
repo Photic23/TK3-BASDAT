@@ -25,3 +25,9 @@ def pay_subscription(request):
         'username': "Scarletra",
     }
     return render(request, 'pembayaran-paket.html', context)
+
+def subscription_history(request):
+    context = {
+        'username': "Scarletra",
+    }
+    return render(request, 'riwayat-langganan.html', context)
