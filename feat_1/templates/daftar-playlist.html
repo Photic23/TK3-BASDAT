@@ -16,10 +16,10 @@
                 </button>
             </a>
             {% comment %} {% if user.daftar_playlist %} {% endcomment %}
-            <h2 class="p-2 text-center">Anda belum memiliki playlist apapun</h2>
+            {% comment %} <h2 class="p-2 text-center">Anda belum memiliki playlist apapun</h2> {% endcomment %}
             {% comment %} {% else %} {% endcomment %}
-            <div class="flex flex-col gap-3">
-                <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-white rounded-lg">
+            <div class="flex flex-col gap-3 py-2">
+                <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
                     <div class="flex items-center gap-6 mr-6">
                         <button class="bg-green-500 hover:bg-green-600 font-semibold w-16 aspect-square rounded-full flex items-center justify-center">
                             <img src={% static 'icon_play.png' %} alt="Play" class="w-5 h-5 rounded-full ">
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 
-                <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-white rounded-lg">
+                <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
                     <div class="flex items-center gap-6 mr-6">
                         <button class="bg-green-500 hover:bg-green-600 font-semibold w-16 aspect-square rounded-full flex items-center justify-center">
                             <img src={% static 'icon_play.png' %} alt="Play" class="w-5 h-5 rounded-full ">
@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 
-                <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-white rounded-lg">
+                <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
                     <div class="flex items-center gap-6 mr-6">
                         <button class="bg-green-500 hover:bg-green-600 font-semibold w-16 aspect-square rounded-full flex items-center justify-center">
                             <img src={% static 'icon_play.png' %} alt="Play" class="w-5 h-5 rounded-full ">
