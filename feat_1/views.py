@@ -37,3 +37,10 @@ def test_searchbar(request):
         'username': "Scarletra",
     }
     return render(request, 'search-bar-code.html', context)
+
+def downloaded_song(request):
+    context = {
+        'username': "Scarletra",
+    }
+    return render(request, 'downloaded-song.html', context)
+
