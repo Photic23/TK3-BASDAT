@@ -9,9 +9,15 @@
         width: 80%;
         margin: 50px auto 0;
     }
+
+    .blockButton {
+        display: block;
+        width: 100%; 
+    }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    
 </head>
 
 <body>
@@ -95,8 +101,22 @@
                     </tr>
                 </tbody>
             </table>
-        </div>    
+        </div><br>
+        <button onclick="goBack()" class="blockButton relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+            Kembali
+            </span>
+        </button>
+        
     </div>
+    
 
 </body>
+
+<script>
+    function goBack() {
+      window.history.back();
+    }
+</script>
+    
 </html>
