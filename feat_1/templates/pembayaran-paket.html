@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock meta %}
+
+{% block content %}
+<div class="flex justify-center items-center h-screen">
+    <div class="container mx-auto bg-gray-100 border bg-green-500 rounded-lg p-6 max-w-xl">
+        <div class="text-black">
+            <h1 class="text-center mb-4 text-4xl font-bold">Pembayaran paket</h1>
+            <h2 class="mb-2">Informasi paket yang akan dibeli :</h2>
+            <div class="bg-[#d1d9e0] border rounded-l my-2 p-1">
+                <div class="flex justify-around mb-2">
+                    <h1 class="font-bold">Jenis</h1>
+                    <h1 class="font-bold">Harga</h1>
+                </div>
+                <div class="flex justify-around mb-2">
+                    <h1>1 bulan</h1>
+                    <h1>Rp54.900</h1>
+                </div>
+            </div>
+            <form method="post" class="flex flex-col">
+                {% csrf_token %}
+                <div class="flex mb-4 gap-2">
+                    <label for="payment" class="block">Metode pembayaran :</label>
+                    <select name="payment" id="payment" class="text-black bg-[#d1d9e0]">
+                        <option value="qris">QRIS</option>
+                        <option value="wallet">E-wallet</option>
+                        <option value="banking">M-banking</option>
+                        <option value="cc">Credit card</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-[#d1d9e0] text-black hover:bg-red-600 hover:text-white font-bold py-2 px-4 rounded">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

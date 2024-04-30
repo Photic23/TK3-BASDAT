@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock meta %}
+
+{% block content %}
+
+    <div class="flex flex-col gap-2 h-screen mx-3 my-2">
+        <h1 class="text-xl text-center font-bold">DAFTAR LAGU</h1> 
+        <div class="flex flex-col gap-3 py-2">
+            <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
+                <div class="flex items-center gap-6 mr-6">
+                    <h1 class="flex items-center justify-center font-bold text-black text-sm w-16 aspect-square border rounded-full bg-green-500">SONG</h1>
+                    <img src={% static 'playlist_image.jpg' %} alt="Playlist" class="w-10 h-10 rounded-full">
+                </div>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-black">Love is in the air</h3>
+                    <p class="text-sm text-gray-400">Artist1</p>
+                </div>
+                <div class="flex flex-col justify-center items-center">
+                    <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
+                <div class="flex items-center gap-6 mr-6">
+                    <h1 class="flex items-center justify-center font-bold text-black text-sm w-16 aspect-square border rounded-full bg-green-500">SONG</h1>
+                    <img src={% static 'playlist_image.jpg' %} alt="Playlist" class="w-10 h-10 rounded-full">
+                </div>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-black">What is love</h3>
+                    <p class="text-sm text-gray-400">Artist2</p>
+                </div>
+                <div class="flex flex-col justify-center items-center">
+                    <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
+                <div class="flex items-center gap-6 mr-6">
+                    <h1 class="flex items-center justify-center font-bold text-black text-sm w-16 aspect-square border rounded-full bg-green-500">PODC</h1>
+                    <img src={% static 'playlist_image.jpg' %} alt="Playlist" class="w-10 h-10 rounded-full">
+                </div>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-black">Love is Blind Pod</h3>
+                    <p class="text-sm text-gray-400">Podcaster1</p>
+                </div>
+                <div class="flex flex-col justify-center items-center">
+                    <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                </div>
+            </div>
+
+            <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
+                <div class="flex items-center gap-6 mr-6">
+                    <h1 class="flex items-center justify-center font-bold text-black text-sm w-16 aspect-square border rounded-full bg-green-500">PLAYLIST</h1>
+                    <img src={% static 'playlist_image.jpg' %} alt="Playlist" class="w-10 h-10 rounded-full">
+                </div>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-black">90s Love Songs</h3>
+                    <p class="text-sm text-gray-400">User1</p>
+                </div>
+                <div class="flex flex-col justify-center items-center">
+                    <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+{% endblock content %}
