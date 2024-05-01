@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cek_royalti',
+    'kelola_album_artist',
+    'kelola_album_label',
     'feat_1',
 ]
 
