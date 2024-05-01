@@ -12,7 +12,14 @@ def show_create_lagu(request):
     context = {
     }
 
-    return render(request, "create_lagu.html", context)
+    return render(request, "create_lagu_artist.html", context)
+
+def show_create_lagu_songwriter(request):
+    context = {
+    }
+
+    return render(request, "create_lagu_songwriter.html", context)
+
 
 def show_list_album(request):
     context = {
