@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cek_royalti',
     'kelola_album_artist',
+    'kelola_album_label',
 ]
 
 MIDDLEWARE = [
