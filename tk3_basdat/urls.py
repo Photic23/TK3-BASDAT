@@ -22,4 +22,5 @@ urlpatterns = [
     path('cek-royalti/', include('cek_royalti.urls'), name='cek-royalti'),
     path('kelola-album-artist/', include('kelola_album_artist.urls'), name='kelola-album-artist'),
     path('kelola-album-label/', include('kelola_album_label.urls'), name='kelola-album-label'),
+    path('user/', include('feat_1.urls'))
 ]
