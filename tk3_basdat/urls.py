@@ -21,4 +21,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('feat_1.urls')),
     path('playlist/', include('feat_2.urls')),
+    path('cek-royalti/', include('cek_royalti.urls'), name='cek-royalti'),
+    path('kelola-album-artist/', include('kelola_album_artist.urls'), name='kelola-album-artist'),
+    path('kelola-album-label/', include('kelola_album_label.urls'), name='kelola-album-label'),
+    path('user/', include('feat_1.urls')),
+    path('podcast/', include('podcast.urls')),
 ]
