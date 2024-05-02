@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock meta %}
+
+{% block content %}
+
+<div class="h-screen flex justify-center items-center">
+    <div class="max-w-lg p-6 bg-[#d1d9e0] rounded-md shadow-md">
+        <h1 class="text-3xl text-black font-bold mb-4 text-center">Scarletra's Playlist Details</h1>
+        <div class="flex gap-2">
+            <h2 class="text-[#000000] font-semibold">Title: </h2>
+            <p class="text-green-600 font-semibold">Playlist1</p>
+        </div>
+        <div class="flex gap-2">
+            <h2 class="text-[#000000] font-semibold">Pembuat: </h2>
+            <p class="text-green-600 font-semibold">Pembuat1</p>
+        </div>
+        <div class="flex gap-2">
+            <h2 class="text-[#000000] font-semibold">Jumlah Lagu: </h2>
+            <p class="text-green-600 font-semibold">12</p>
+        </div>
+        <div class="flex gap-2">
+            <h2 class="text-[#000000] font-semibold">Total Durasi: </h2>
+            <p class="text-green-600 font-semibold">21 Menit</p>
+        </div>
+        <div class="flex gap-2">
+            <h2 class="text-[#000000] font-semibold">Tanggal Dibuat: </h2>
+            <p class="text-green-600 font-semibold">14/03/2024</p>
+        </div>
+        <div class="flex gap-2">
+            <h2 class="text-[#000000] font-semibold">Deskripsi: </h2>
+            <p class="text-green-600 font-semibold">Lorom Ipsum...</p>
+        </div>
+        <div class="flex flex-col justify-center items-center">
+            <a class="border-black p-1 w-8 w-full"><button class="text-black text-sm rounded">Shuffle</button></a>
+            <a class="border-black p-1 w-8 w-full"><button class="text-black text-sm rounded">Kembali</button></a>
+        </div>
+        <table class="w-full gap-4 my-3 text-black text-sm">
+            <thead>
+                <tr class="text-center ">
+                    <th>Judul Lagu</th>
+                    <th>Oleh</th>
+                    <th>Durasi</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="gap-3">
+                <tr class="text-center border-b border-white mb-4"> <!-- Add mb-4 class here -->
+                    <td class="py-2">Song 1</td>
+                    <td>Artist1</td>
+                    <td>2 menit</td>
+                    <td><a href={% url 'feat_1:pay_subscription' %}><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
+                        Subsribe
+                    </button></a></td>
+                </tr>
+                <tr class="text-center border-b border-white mb-4"> <!-- Add mb-4 class here -->
+                    <td class="py-2">Song 2</td>
+                    <td>Artist2</td>
+                    <td>4 menit</td>
+                    <td><a href={% url 'feat_1:pay_subscription' %}><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
+                        Subsribe
+                    </button></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}
