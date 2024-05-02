@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'feat_1',
     'podcast',
     'main',
+    'feat_2',
 ]
 
 MIDDLEWARE = [
