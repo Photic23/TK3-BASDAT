@@ -26,4 +26,5 @@ urlpatterns = [
     path('kelola-album-label/', include('kelola_album_label.urls'), name='kelola-album-label'),
     path('user/', include('feat_1.urls')),
     path('podcast/', include('podcast.urls')),
+    path('main/', include('main.urls')),
 ]
