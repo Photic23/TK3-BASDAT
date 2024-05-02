@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 
 def kelola_playlist(request):
     return render(request, 'kelola_playlist.html')
