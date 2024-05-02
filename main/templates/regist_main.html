@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            color: #1DB954;
+            text-align: center;
+        }
+
+        div {
+            background-color: #181818;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px; /* Adjusted max-width */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            margin-right: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        a {
+            flex: 1;
+            padding: 8px 16px;
+            background-color: #1DB954;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        a:last-child {
+            margin-right: 0;
+        }
+
+        a:hover {
+            background-color: #118038;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registration</h1>
+    <div>
+        <div class="button-group">
+            <a href="{% url 'main:show_register_label' %}">Label</a>
+            <a href="{% url 'main:show_register_pegguna' %}">User</a>
+        </div>
+    </div>
+</body>
+</html>
