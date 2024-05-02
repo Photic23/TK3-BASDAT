@@ -57,3 +57,9 @@ def playlist_detail(request):
         'username': "Scarletra",
     }
     return render(request, 'playlist-detail.html', context)
+
+def login(request):
+    context = {
+        'username': "Scarletra",
+    }
+    return render(request, 'login-form.html', context)
