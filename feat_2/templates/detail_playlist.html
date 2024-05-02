@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Playlist Detail</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 80%;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px; /* Jarak atas 10px */
+        }
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>USER PLAYLIST DETAIL</h2>
+
+    <table>
+      <tr>
+        <th>Judul:</th>
+        <td>Playlist1</td>
+      </tr>
+      <tr>
+        <th>Pembuat:</th>
+        <td>Pembuat1</td>
+      </tr>
+      <tr>
+        <th>Jumlah Lagu:</th>
+        <td>2</td>
+      </tr>
+      <tr>
+        <th>Total Durasi:</th>
+        <td>5 menit</td>
+      </tr>
+      <tr>
+        <th>Tanggal Dibuat:</th>
+        <td>18/03/24</td>
+      </tr>
+      <tr>
+        <th>Deskripsi:</th>
+        <td></td>
+      </tr>
+    </table>
+
+    <input type="button" value="Shuffle Play">
+    <input type="button" value="Kembali">
+
+    <h2>DAFTAR LAGU</h2>
+
+    <table>
+      <tr>
+        <th>Judul Lagu</th>
+        <th>Oleh</th>
+        <th>Durasi</th>
+        <th>Actions</th>
+      </tr>
+      <tr>
+        <td>Song1</td>
+        <td>Artist1</td>
+        <td>2 menit</td>
+        <td>
+            <input type="button" value="Lihat">
+            <input type="button" value="Play">
+            <input type="button" value="Hapus">
+        </td>
+      </tr>
+      <tr>
+        <td>Song2</td>
+        <td>Artist2</td>
+        <td>3 menit</td>
+        <td>
+            <input type="button" value="Lihat">
+            <input type="button" value="Play">
+            <input type="button" value="Hapus">
+        </td>
+      </tr>
+    </table>
+
+    <input type="button" value="Tambah Lagu">
+</div>
+
+</body>
+</html>
