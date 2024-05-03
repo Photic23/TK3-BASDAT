@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            color: #1DB954;
+            text-align: center;
+        }
+
+        div {
+            background-color: #181818;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #535353;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #282828;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #333;
+        }
+
+        tr:hover {
+            background-color: #535353;
+        }
+
+        /* Button styles */
+        .marmoot-button {
+            position: relative;
+            top: 20px;
+            left: 20px;
+            background-color: #1DB954;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .marmoot-button:hover {
+            background-color: #118038;
+            color: #000;
+        }
+
+        .back-button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #1DB954;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #118038;
+            color: #000;
+        }
+
+        .row-button{
+            color: #fff;
+        }
+
+        /* Search bar styles */
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            padding: 8px;
+            width: 60%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-button {
+            padding: 8px 16px;
+            background-color: #1DB954;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #118038;
+        }
+
+        .navbar {
+            background-color: #181818;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1DB954;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-right: 20px;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: #333;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">Marmoot</a>
+        <ul class="navbar-nav">
+            <li class="nav-item"><a href="{% url 'main:show_dashboard_podcast' %}" class="nav-link">Dashboard</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Chart</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Search Bar</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Kelola Playlist</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Langanan Paket</a></li>
+            <li class="nav-item"><a href="{% url 'podcast:show_podcast_list' %}" class="nav-link">Podcast</a></li>
+        </ul>
+    </nav>
+    <a href="#" onclick="window.history.back();" class="marmoot-button">Back</a>
+    <h1>Podcast1 Episode List</h1>
+    <div class="search-container">
+        <input type="text" placeholder="Search..." class="search-input">
+        <button class="search-button">Search</button>
+    </div>
+    <div>
+        <table>
+            <tr>
+                <th>Judul</th>
+                <th>Deskripsi</th>
+                <th>Durasi</th>
+                <th>Tanggal</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td>Subjudul1</td>
+                <td>Lorem Ipsum</td>
+                <td>59 menit</td>
+                <td>18/03/2024</td>
+                <td>
+                    <a class="row-button" href="#">[hapus]</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Subjudul2</td>
+                <td>Lorem Ipsum</td>
+                <td>1 jam 2 menit</td>
+                <td>25/03/2024</td>
+                <td>
+                    <a class="row-button" href="#">[hapus]</a>
+                </td>
+            </tr>
+            <tr>
+                <td>...</td>
+                <td >...</td>
+                <td>...</td>
+                <td >...</td>
+                <td >...</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
