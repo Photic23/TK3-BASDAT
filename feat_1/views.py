@@ -3,11 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 
 def index(request):
-    context = {
-        'username': "Scarletra",
-    }
-    
-    return render(request, 'landing-page.html', context)
+    return render(request, 'landing-page.html')
+
 
 def daftar_playlist_page(request):
     context = {
@@ -57,9 +54,3 @@ def playlist_detail(request):
         'username': "Scarletra",
     }
     return render(request, 'playlist-detail.html', context)
-
-def login(request):
-    context = {
-        'username': "Scarletra",
-    }
-    return render(request, 'login-form.html', context)
