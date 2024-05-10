@@ -2,9 +2,6 @@ from django.shortcuts import render
 
 # Create your views here.
 
-def index(request):
-    return render(request, 'landing-page.html')
-
 
 def daftar_playlist_page(request):
     context = {
