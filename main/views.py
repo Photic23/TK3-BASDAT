@@ -4,8 +4,6 @@ from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 import psycopg2
 from main.connect import get_db_connection
-from utils import context_user
-from datetime import datetime
 
 # Create your views here.
 
@@ -88,14 +86,10 @@ def login(request):
             }
             if account is not None:
                 request.session['nama'] = user['nama']
-                request.session['password'] = account[1],
-                request.session['gender'] = account[2],
-                request.session['tempat_lahir'] = account[3],
-                request.session['is_verified'] = account[5],
-                request.session['kota_asal'] = account[6],
-                request.session['roles'] = account[7],
-                
-                return redirect('main:show_dashboard')
+                context = {
+                    'user': user,
+                }
+                return render(request, 'dashboard.html', context)
             else:
                 messages.error(request, 'Email or password is incorrect')
                 return redirect('main:login')
@@ -129,10 +123,8 @@ def show_dashboard_pengguna(request, context):
 
     return render(request, "dashboard_pengguna_biasa.html", context)
 
-def show_dashboard(request):
-    context = {
-        'user': context_user.context_user_getter(request)
-    }
+def show_dashboard(request, context):
+
     return render(request, "dashboard.html", context)
 
 def show_dashboard_podcast(request):

@@ -87,7 +87,7 @@
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800" style="text-align: center;">
-                    DAFTAR LAGU PADA ALBUM1
+                    DAFTAR LAGU PADA {{ judul_album }}
                 </caption>
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -109,76 +109,34 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for song in song_query %}
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Lagu1
+                            {{ song.0 }}
                         </th>
                         <td class="px-6 py-4">
-                            1 menit
+                            {{ song.1 }}
                         </td>
                         <td class="px-6 py-4">
-                            1
+                            {{ song.2 }}
                         </td>
                         <td class="px-6 py-4">
-                            1
+                            {{ song.3 }}
                         </td>
                         <td class="px-6 py-4">
                             <button type="list_song" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
                                 <img src="/static/icon_list.png" alt="List Icon" class="w-5 h-5 text-white me-2">
                                 See details
-                            </button><button type="delete_album" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
+                            </button>
+                            <button type="delete_album" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
                                 <img src="/static/icon_delete.png" alt="List Icon" class="w-5 h-5 text-white me-2">
                                 Delete song
                             </button> 
                         </td>
                     </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Song2
-                        </th>
-                        <td class="px-6 py-4">
-                            1 menit
-                        </td>
-                        <td class="px-6 py-4">
-                            1
-                        </td>
-                        <td class="px-6 py-4">
-                            1 
-                        </td>
-                        <td class="px-6 py-4">
-                            <button type="list_song" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
-                                <img src="/static/icon_list.png" alt="List Icon" class="w-5 h-5 text-white me-2">
-                                See details
-                            </button><button type="delete_album" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
-                                <img src="/static/icon_delete.png" alt="List Icon" class="w-5 h-5 text-white me-2">
-                                Delete song
-                            </button> 
-                        </td>
-                    </tr>
-                    <tr class="bg-white dark:bg-gray-800">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Lagu3
-                        </th>
-                        <td class="px-6 py-4">
-                            1 menit
-                        </td>
-                        <td class="px-6 py-4">
-                            1
-                        </td>
-                        <td class="px-6 py-4">
-                            1
-                        </td>
-                        <td class="px-6 py-4">
-                            <button type="list_song" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
-                                <img src="/static/icon_list.png" alt="List Icon" class="w-5 h-5 text-white me-2">
-                                See details
-                            </button><button type="delete_album" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
-                                <img src="/static/icon_delete.png" alt="List Icon" class="w-5 h-5 text-white me-2">
-                                Delete song
-                            </button> 
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
+                
             </table>
         </div><br>
         <button onclick="goBack()" class="blockButton relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
