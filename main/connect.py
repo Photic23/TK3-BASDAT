@@ -19,9 +19,6 @@ def get_db_connection():
             port=db_port
         )
 
-        # Print "Berhasil" if connection is successful
-        print("Berhasil")
-
         # Create a cursor object
         cursor = connection.cursor()
 
