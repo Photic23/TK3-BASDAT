@@ -96,13 +96,11 @@
                     {% endif %}
 
                     {% if user.roles in 'Artist, Songwriter' %}
-                        <li><a href="">Kelola Album & Songs</a></li>
-                    {% elif user.roles in 'Artist, Songwriter' %}
-                        <li><a href="">Kelola Album & Songs</a></li>
+                        <li><a href="{% url 'kelola-album-artist:show_artist' user_email=user.email user_roles=user.roles %}">Kelola Album & Songs</a></li>
                     {% endif %}
 
                     {% if user.roles in 'Artist, Songwriter, Label' %}
-                        <li><a href="">Cek Royalti</a></li>
+                        <li><a href="{% url 'cek-royalti:show_main' user_email=user.email %}">Cek Royalti</a></li>
                     {% elif 'Artist' in user or 'Songwriter' in user or 'Label' in user %}
                         <li><a href="">Cek Royalti</a></li>
                     {% endif %}
