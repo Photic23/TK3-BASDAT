@@ -16,28 +16,29 @@
         <p id="email" class="text-gray-300">{{ user.email }}</p>
 
         <label for="city" class="block">Kota Asal:</label>
-        <p id="city" class="text-gray-300">{{ user.kota_asal }}</p>
+        <p id="city" class="text-gray-300">{{ data.kota_asal }}</p>
 
         <label for="gender" class="block">Gender:</label>
-        {% if user.gender == 0 %}
+        {% if data.gender == 0 %}
         <p id="gender" class="text-gray-300">Perempuan</p>
         {% else %}
         <p id="gender" class="text-gray-300">Laki-laki</p>
         {% endif %}
 
         <label for="birthplace" class="block">Tempat Lahir:</label>
-        <p id="birthplace" class="text-gray-300">{{ user.tempat_lahir }}</p>
+        <p id="birthplace" class="text-gray-300">{{ data.tempat_lahir }}</p>
 
         <label for="birthdate" class="block">Tanggal Lahir:</label>
-        <p id="birthdate" class="text-gray-300">{{ user.tanggal_lahir }}</p>
+        <p id="birthdate" class="text-gray-300">{{ data.tanggal_lahir }}</p>
 
         <label for="role" class="block">Role:</label>
         <p id="role" class="text-gray-300">{{ user.roles }}</p>
 
+        {% if user.kontak %}
         <h2 class="text-lg font-bold mt-4 mb-2">Album List</h2>
         <table class="w-full table-auto">
             <thead>
-                <tr>
+                <tr class="bg-gray-600">
                     <th class="bg-gray-700 text-white px-4 py-2">Judul</th>
                     <th class="bg-gray-700 text-white px-4 py-2">Durasi</th>
                     <th class="bg-gray-700 text-white px-4 py-2">Action</th>
@@ -45,17 +46,97 @@
             </thead>
             <tbody>
                 <tr class="bg-gray-600">
-                    <td class="px-4 py-2">Data 1</td>
-                    <td class="px-4 py-2">Data 2</td>
-                    <td class="px-4 py-2">Data 3</td>
+                    <td class="text-center">Data 1</td>
+                    <td class="text-center">Data 2</td>
+                    <td class="text-center">Data 3</td>
                 </tr>
-                <tr class="bg-gray-700">
-                    <td class="px-4 py-2">Data 4</td>
-                    <td class="px-4 py-2">Data 5</td>
-                    <td class="px-4 py-2">Data 6</td>
+                <tr class="bg-gray-600">
+                    <td class="text-center">Data 5</td>
+                    <td class="text-center">Data 6</td>
+                    <td class="text-center">Data 7</td>
                 </tr>
             </tbody>
         </table>
+        {% endif %}
+
+        {% if 'Artist' or 'Songwriter' in user.roles %}
+        <h2 class="text-lg font-bold mt-4 mb-2">Song List</h2>
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-600">
+                    <th class="bg-gray-700 text-white px-4 py-2">Judul</th>
+                    <th class="bg-gray-700 text-white px-4 py-2">Durasi</th>
+                    <th class="bg-gray-700 text-white px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-gray-600">
+                    <td class="text-center">Data 1</td>
+                    <td class="text-center">Data 2</td>
+                    <td class="text-center">Data 3</td>
+                </tr>
+                <tr class="bg-gray-600">
+                    <td class="text-center">Data 5</td>
+                    <td class="text-center">Data 6</td>
+                    <td class="text-center">Data 7</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+
+        {% if 'Podcaster' in user.roles %}
+        <h2 class="text-lg font-bold mt-4 mb-2">Podcast List</h2>
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-600">
+                    <th class="bg-gray-700 text-white px-4 py-2">Judul</th>
+                    <th class="bg-gray-700 text-white px-4 py-2">Jumlah Episode</th>
+                    <th class="bg-gray-700 text-white px-4 py-2">Durasi</th>
+                    <th class="bg-gray-700 text-white px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-gray-600">
+                    <td class="text-center">Data 1</td>
+                    <td class="text-center">Data 2</td>
+                    <td class="text-center">Data 3</td>
+                    <td class="text-center">Data 4</td>
+                </tr>
+                <tr class="bg-gray-600">
+                    <td class="text-center">Data 5</td>
+                    <td class="text-center">Data 6</td>
+                    <td class="text-center">Data 7</td>
+                    <td class="text-center">Data 8</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+
+        {% if 'Pengguna biasa' in user.roles %}
+        <h2>Playlist List</h2>
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-600">
+                    <th class="bg-gray-700 text-white px-4 py-2">Playlist</th>
+                    <th class="bg-gray-700 text-white px-4 py-2">Durasi</th>
+                    <th class="bg-gray-700 text-white px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-gray-600">
+                    <td class="text-center">Data 1</td>
+                    <td class="text-center">Data 2</td>
+                    <td class="text-center">Data 3</td>
+                </tr>
+                <tr class="bg-gray-600">
+                    <td class="text-center">Data 5</td>
+                    <td class="text-center">Data 6</td>
+                    <td class="text-center">Data 7</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+
     </div>
 </div>
 

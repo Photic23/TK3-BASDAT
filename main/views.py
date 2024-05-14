@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
+from utils import context_user
 import psycopg2
 from main.connect import get_db_connection
 
@@ -75,23 +76,15 @@ def login(request):
             account = cursor.fetchone()
             user = {
                 'email': account[0],
-                'password': account[1],
                 'nama': account[2],
-                'gender': account[3],
-                'tempat_lahir': account[4],
-                'tanggal_lahir': account[5],
-                'is_verified': account[6],
-                'kota_asal': account[7],
                 'roles': account[8]
             }
             if account is not None:
                 request.session['nama'] = user['nama']
                 request.session['email'] = user['email']
                 request.session['roles'] = user['roles']
-                context = {
-                    'user': user,
-                }
-                return render(request, 'dashboard.html', context)
+
+                return redirect('main:show_dashboard')
             else:
                 messages.error(request, 'Email or password is incorrect')
                 return redirect('main:login')
@@ -125,8 +118,25 @@ def show_dashboard_pengguna(request, context):
 
     return render(request, "dashboard_pengguna_biasa.html", context)
 
-def show_dashboard(request, context):
-
+def show_dashboard(request):
+    connection = get_db_connection()
+    user = context_user.context_user_getter(request)
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal FROM AKUN WHERE email = '{user['email']}'")
+    user_data = cursor.fetchone()
+    print(user_data[0])
+    data = {
+        'gender': user_data[0],
+        'tempat_lahir': user_data[1],
+        'tanggal_lahir': user_data[2],
+        'is_verified': user_data[3],
+        'kota_asal': user_data[4]
+    }
+    context = {
+        'user': user,
+        'data': data
+    }
+    
     return render(request, "dashboard.html", context)
 
 def show_dashboard_podcast(request):
