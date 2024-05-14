@@ -1,29 +1,33 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+    </head>
 
-{% block meta %}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @keyframes blink {
-            0%, 100% { background-color: #000; }
-            33.33% { background-color: #333; }
-            66.66% { background-color: #444; }
-        }
+    <body>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            @keyframes blink {
+                0%, 100% { background-color: #000; }
+                33.33% { background-color: #333; }
+                66.66% { background-color: #444; }
+            }
 
-        .blink-bg {
-            animation: blink 6s infinite;
-        }
-    </style>
-{% endblock meta %}
-
-{% block content %}
-
-<div class="h-screen flex justify-center items-center blink-bg">
-    <div class="text-center">
-        <h1 class="text-3xl font-bold mb-8">Marmut - C3</h1>
-        <a href={% url 'main:login' %}><button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-4">Login</button></a>
-        <a href="#"><button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Register</button></a>
-    </div>
-</div>
-
-{% endblock content %}
+            .blink-bg {
+                animation: blink 6s infinite;
+            }
+        </style>
+        <div class="h-screen flex justify-center items-center blink-bg">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold mb-8">Marmut - C3</h1>
+                <a href={% url 'main:login' %}><button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-4">Login</button></a>
+                <a href="#"><button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Register</button></a>
+            </div>
+        </div>
+    </body>
+</html>
