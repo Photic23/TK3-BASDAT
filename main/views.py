@@ -1,6 +1,105 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.views.decorators.http import require_http_methods
+from utils import context_user
+import psycopg2
+from main.connect import get_db_connection
 
 # Create your views here.
+
+def index(request):
+    return render(request, "landing-page.html")
+
+@require_http_methods(['GET', 'POST'])
+def login(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+
+        try:
+            connection = get_db_connection()
+
+            cursor = connection.cursor()
+            cursor.execute(f"""SELECT
+                u.email,
+                u.password,
+                u.nama,
+                u.gender,
+                u.tempat_lahir,
+                u.tanggal_lahir,
+                u.is_verified,
+                u.kota_asal,
+                COALESCE(
+                    STRING_AGG(DISTINCT role, ', '),
+                    'Pengguna_biasa'
+                ) AS roles,
+                CASE
+                    WHEN premium.email IS NOT NULL THEN 'Premium'
+                    ELSE 'Non_premium'
+                END AS premium_status
+            FROM
+                marmut.AKUN as u
+            LEFT JOIN
+                (
+                    SELECT email_akun AS email_akun, 'Artist' AS role
+                    FROM marmut.ARTIST
+                    UNION ALL
+                    SELECT email AS email_akun, 'Podcaster' AS role
+                    FROM marmut.PODCASTER
+                    UNION ALL
+                    SELECT email_akun AS email_akun, 'Songwriter' AS role
+                    FROM marmut.SONGWRITER
+                ) AS roles_table ON u.email = roles_table.email_akun
+            LEFT JOIN
+                (
+                    SELECT email
+                    FROM marmut.PREMIUM
+                ) AS premium ON u.email = premium.email
+            WHERE 
+                u.email = '{email}' AND u.password = '{password}'
+                
+            GROUP BY
+                u.email,
+                u.password,
+                u.nama,
+                u.gender,
+                u.tempat_lahir,
+                u.tanggal_lahir,
+                u.is_verified,
+                u.kota_asal,
+                premium.email;""")
+            
+            account = cursor.fetchone()
+            user = {
+                'email': account[0],
+                'nama': account[2],
+                'roles': account[8],
+                'premium_status': account[9]
+            }
+            
+            if account is not None:
+                request.session['nama'] = user['nama']
+                request.session['email'] = user['email']
+                request.session['roles'] = user['roles']
+                request.session['premium_status'] = user['premium_status']
+
+                return redirect('main:show_dashboard')
+            else:
+                messages.error(request, 'Email or password is incorrect')
+                return redirect('main:login')
+
+        except psycopg2.Error as e:
+            print(e)
+            return HttpResponse("Error occurred while connecting to the database")
+
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+
+    else:
+        return render(request, 'login-form.html')
 
 def show_register_main(request):
     context = {
@@ -8,20 +107,37 @@ def show_register_main(request):
 
     return render(request, "regist_main.html", context)
 
-def show_register_pegguna(request):
+def show_register_pengguna(request):
     context = {
     }
 
     return render(request, "regist.html", context)
 
-def show_dashboard_podcast(request):
-    context = {
+def show_dashboard(request):
+    connection = get_db_connection()
+    user = context_user.context_user_getter(request)
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal FROM AKUN WHERE email = '{user['email']}'")
+    user_data = cursor.fetchone()
+    print(user_data[0])
+    data = {
+        'gender': user_data[0],
+        'tempat_lahir': user_data[1],
+        'tanggal_lahir': user_data[2],
+        'is_verified': user_data[3],
+        'kota_asal': user_data[4]
     }
-
-    return render(request, "dashboard_podcast.html", context)
+    context = {
+        'user': user,
+        'data': data
+    }
+    
+    return render(request, "dashboard.html", context)
 
 def show_register_label(request):
     context = {
     }
 
     return render(request, "regist_label.html", context)
+
+    

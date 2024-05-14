@@ -6,6 +6,7 @@
 {% endblock meta %}
 
 {% block content %}
+
 <div class="flex flex-col justify-center items-center h-screen">
     <div class="flex justify-evenly w-full p-4">
         <h1 class="font-bold text-3xl mr-10">LANGGANAN PAKET</h1>
@@ -25,28 +26,28 @@
                     <tr class="text-center border-b border-white mb-4"> <!-- Add mb-4 class here -->
                         <td class="py-2">1 bulan</td>
                         <td>Rp54.900</td>
-                        <td><a href={% url 'feat_1:pay_subscription' %}><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
+                        <td><a href="{% url 'feat_1:pay_subscription' %}?package=1 bulan"><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
                             Subsribe
                         </button></a></td>
                     </tr>
                     <tr class="text-center border-b border-white mb-4">
                         <td class="py-2">3 bulan</td>
                         <td>Rp54.900</td>
-                        <td><a href={% url 'feat_1:pay_subscription' %}><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
+                        <td><a href="{% url 'feat_1:pay_subscription' %}?package=3 bulan"><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
                             Subscribe
                         </button></a></td>
                     </tr>
                     <tr class="text-center border-b border-white mb-4">
                         <td class="py-2">6 bulan</td>
                         <td>Rp54.900</td>
-                        <td><a href={% url 'feat_1:pay_subscription' %}><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
+                        <td><a href="{% url 'feat_1:pay_subscription' %}?package=6 bulan"><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
                             Subscribe
                         </button></a></td>
                     </tr>
                     <tr class="text-center border-b border-white mb-4">
                         <td class="py-2">1 tahun</td>
                         <td>Rp54.900</td>
-                        <td><a href={% url 'feat_1:pay_subscription' %}><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
+                        <td><a href="{% url 'feat_1:pay_subscription' %}?package=12a"><button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-2 py-2 rounded-full">
                             Subscribe
                         </button></a></td>
                     </tr>
