@@ -1,8 +1,29 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.views.decorators.http import require_http_methods
+import psycopg2
+from main.connect import get_db_connection
 
 # Create your views here.
-def show_main(request):
+def show_main(request, user_email):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
+                        s.total_play * phc.rate_royalti AS royalties 
+                    FROM KONTEN k
+                    JOIN SONG s ON s.id_konten = k.id
+                    JOIN ALBUM a ON s.id_album = a.id
+                    JOIN ARTIST r ON s.id_artist = r.id
+                    JOIN PEMILIK_HAK_CIPTA phc ON r.id = s.id_artist
+                    JOIN ROYALTI rt ON rt.id_pemilik_hak_cipta = phc.id AND rt.id_song = s.id_konten
+                    WHERE r.email_akun = %s""", (user_email,))
+    royalti = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
     context = {
+        'royalti_query': royalti
     }
 
     return render(request, "list_royalti.html", context)
