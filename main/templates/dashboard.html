@@ -32,7 +32,11 @@
         <p id="birthdate" class="text-gray-300">{{ data.tanggal_lahir }}</p>
 
         <label for="role" class="block">Role:</label>
+        {% if 'Pengguna_biasa' in user.roles %}
+        <p id="role" class="text-gray-300">Pengguna biasa</p>
+        {% else %}
         <p id="role" class="text-gray-300">{{ user.roles }}</p>
+        {% endif %}
 
         {% if user.kontak %}
         <h2 class="text-lg font-bold mt-4 mb-2">Album List</h2>
@@ -139,6 +143,5 @@
 
     </div>
 </div>
-
 
 {% endblock content %}

@@ -9,10 +9,7 @@ from main.connect import get_db_connection
 # Create your views here.
 
 def index(request):
-    context = {
-    }
-
-    return render(request, "landing-page.html", context)
+    return render(request, "landing-page.html")
 
 @require_http_methods(['GET', 'POST'])
 def login(request):
@@ -77,12 +74,15 @@ def login(request):
             user = {
                 'email': account[0],
                 'nama': account[2],
-                'roles': account[8]
+                'roles': account[8],
+                'premium_status': account[9]
             }
+            
             if account is not None:
                 request.session['nama'] = user['nama']
                 request.session['email'] = user['email']
                 request.session['roles'] = user['roles']
+                request.session['premium_status'] = user['premium_status']
 
                 return redirect('main:show_dashboard')
             else:
@@ -113,11 +113,6 @@ def show_register_pengguna(request):
 
     return render(request, "regist.html", context)
 
-def show_dashboard_pengguna(request, context):
-
-
-    return render(request, "dashboard_pengguna_biasa.html", context)
-
 def show_dashboard(request):
     connection = get_db_connection()
     user = context_user.context_user_getter(request)
@@ -138,12 +133,6 @@ def show_dashboard(request):
     }
     
     return render(request, "dashboard.html", context)
-
-def show_dashboard_podcast(request):
-    context = {
-    }
-
-    return render(request, "dashboard_podcast.html", context)
 
 def show_register_label(request):
     context = {

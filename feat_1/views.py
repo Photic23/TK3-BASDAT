@@ -30,8 +30,9 @@ def add_playlist(request):
     return render(request, 'form-playlist.html', context)
 
 def add_subscription(request):
+    user = context_user.context_user_getter(request)
     context = {
-        'username': "Scarletra",
+        'user': user
     }
     return render(request, 'langganan-paket.html', context)
 
@@ -79,12 +80,6 @@ def subscription_history(request):
     }
     return render(request, 'riwayat-langganan.html', context)
 
-def add_new_subscription(request):
-    context = {
-        'username': "Scarletra",
-    }
-    return render(request, 'riwayat-langganan.html', context)
-
 def test_searchbar(request):
     context = {
         'username': "Scarletra",
@@ -92,10 +87,18 @@ def test_searchbar(request):
     return render(request, 'search-bar-code.html', context)
 
 def downloaded_song(request):
-    context = {
-        'username': "Scarletra",
-    }
-    return render(request, 'downloaded-song.html', context)
+    user = context_user.context_user_getter(request)
+    if user['premium_status'] == "Premium":
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM DOWNLOADED_SONG WHERE email_downloader = '{user['email']}'")
+        downloaded_song = cursor.fetchall()
+        print(downloaded_song)
+        cursor.close()
+        connection.close()
+        return render(request, 'downloaded-song.html', user)
+    else:
+        return redirect('main:show_dashboard')
 
 def playlist_detail(request):
     context = {
