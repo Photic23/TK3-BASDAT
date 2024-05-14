@@ -86,6 +86,8 @@ def login(request):
             }
             if account is not None:
                 request.session['nama'] = user['nama']
+                request.session['email'] = user['email']
+                request.session['roles'] = user['roles']
                 context = {
                     'user': user,
                 }

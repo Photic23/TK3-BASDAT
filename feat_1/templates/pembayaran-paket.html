@@ -77,12 +77,15 @@
                     <h1 class="font-bold">Harga</h1>
                 </div>
                 <div class="flex justify-around mb-2">
-                    <h1>1 bulan</h1>
-                    <h1>Rp54.900</h1>
+                    <h1>{{ data_paket.jenis }}</h1>
+                    <h1>Rp {{ data_paket.harga }}</h1>
                 </div>
             </div>
             <form method="post" class="flex flex-col">
                 {% csrf_token %}
+                <!-- Hidden input field to store the value of data_paket -->
+                <input type="hidden" name="jenis_paket" value="{{ data_paket.jenis }}">
+                <input type="hidden" name="harga_paket" value="{{ data_paket.harga }}">
                 <div class="flex mb-4 gap-2">
                     <label for="payment" class="block">Metode pembayaran :</label>
                     <select name="payment" id="payment" class="text-black bg-[#d1d9e0]">
