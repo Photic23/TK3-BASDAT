@@ -24,6 +24,7 @@
         CREATE ALBUM
     </p>
     <form id="myForm" class="max-w-sm mx-auto">
+      {% csrf_token %}
         <label for="album-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Judul</label>
         <div class="flex">
         <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
@@ -39,7 +40,7 @@
         </span>
         <select id="label-name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           {% for label in label_name %}
-          <option>{{ label.0 }}</option>
+          <option value="{{ label.1 }}">{{ label.0 }}</option>          
           {% endfor %}
         </select>        
         </div>
@@ -60,12 +61,12 @@
       <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
           <img src="/static/icon_artist.png" alt="Artist Icon" class="w-4 h-4 text-gray-500 dark:text-gray-400">
       </span>
-      {% if user_roles in "Artist" %}
-      <input type="text" id="song-name" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="{{ self_name }}" disabled>
+      {% if user.roles in "Artist" %}
+      <input type="text" id="artist-name" value="{{user_id}}" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="{{ user.nama }}" disabled>
       {% else %}
       <select id="artist-name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         {% for artist in artists_name %}
-        <option>{{artist.0}}</option>
+        <option value="{{artist.1}}">{{artist.0}}</option>
         {% endfor %}
       </select>
       {% endif %}
@@ -81,17 +82,17 @@
             <div id="dropdownsong" class="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
                 <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSearchButton">
                   {% for songwriter in songwriters_name %}
-                    {% if songwriter.2 == user_email %}
+                    {% if songwriter.2 == user.email %}
                       <li>
                         <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                          <input id="{{songwriter.1}}" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" checked disabled>
+                          <input id="{{songwriter.1}}" type="checkbox" value="{{songwriter.1}}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" checked disabled>
                           <label for="{{songwriter.1}}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{songwriter.0}}</label>
                         </div>
                       </li>
                     {% else %}
                       <li>
                         <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                          <input id="{{songwriter.1}}" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                          <input id="{{songwriter.1}}" type="checkbox" value="{{songwriter.1}}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                           <label for="{{songwriter.1}}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{songwriter.0}}</label>
                         </div>
                       </li>
@@ -122,6 +123,14 @@
           </div>
       </div>
       <br>
+      <label for="durasi" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Durasi</label>
+        <div class="flex">
+        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+            <img src="/static/icon_time.png" alt="Album Icon" class="w-4 h-4 text-gray-500 dark:text-gray-400">
+        </span>
+        <input type="text" id="durasi" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="">
+        </div>
+        <br>
       <button type="submit" class="blockButton relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
           <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
           Submit
@@ -131,17 +140,74 @@
 </div>
 </body>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('myForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+function addProduct() {
+    var albumName = document.getElementById('album-name').value;
+    var labelName = document.getElementById('label-name').value;
+    var songName = document.getElementById('song-name').value;
+    var durasi = document.getElementById('durasi').value;
+    var artistElement = document.getElementById('artist-name');
+    var artistName;
 
-            var albumName = document.getElementById('album-name').value;
-            var labelName = document.getElementById('label-name').value;
+    if (artistElement.tagName === 'INPUT') {
+        artistName = artistElement.value;
+    } else if (artistElement.tagName === 'SELECT') {
+        artistName = artistElement.options[artistElement.selectedIndex].value;
+    }
 
-            console.log('Album Name:', albumName);
-            console.log('Label Name:', labelName);
-        });
+    var checkedSongwriters = [];
+    var checkboxes = document.querySelectorAll('#dropdownsong input[type="checkbox"]:checked');
+    checkboxes.forEach(function(checkbox) {
+        checkedSongwriters.push(checkbox.value);
     });
+
+    var checkedGenres = [];
+    var genreCheckboxes = document.querySelectorAll('#dropdownSearch input[type="checkbox"]:checked');
+    genreCheckboxes.forEach(function(checkbox) {
+        var label = document.querySelector('label[for="' + checkbox.id + '"]');
+        if (label) {
+            checkedGenres.push(label.textContent);
+        }
+    });
+
+    // Create data object
+    var data = {
+        albumName: albumName,
+        labelName: labelName,
+        artistName: artistName,
+        songName: songName,
+        songwriters: checkedSongwriters,
+        genres: checkedGenres,
+        durasi: durasi
+    };
+
+    // Send data via fetch
+    fetch("{% url 'kelola-album-artist:form_album' %}", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(data)
+    }).then(response => {
+        if (response.status === 201) {
+            console.log('Success:', response);
+            document.getElementById("myForm").reset();
+        } else {
+            console.error('Error:', response);
+        }
+    }).catch((error) => {
+        console.error('Error:', error);
+    });
+
+    return false;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('myForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        addProduct();
+    });
+});
 </script>
 {% endblock content %}
 </html>
