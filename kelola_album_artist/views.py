@@ -4,17 +4,18 @@ from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 import psycopg2
 from main.connect import get_db_connection
+from utils import context_user
 # Create your views here.
 
-def show_create_album(request, user_email, user_roles):
+def show_create_album(request):
+    user = context_user.context_user_getter(request)
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Execute all queries using a single cursor
     cursor.execute("SELECT nama, id FROM LABEL")
     label_name = cursor.fetchall()
 
-    cursor.execute("SELECT nama FROM AKUN WHERE email=%s", (user_email,))
+    cursor.execute("SELECT nama FROM AKUN WHERE email=%s", (user['email'],))
     self_name = cursor.fetchone()
 
     cursor.execute("SELECT nama, id FROM ARTIST A, AKUN AK WHERE ak.email=a.email_akun")
@@ -29,15 +30,13 @@ def show_create_album(request, user_email, user_roles):
     # Close the cursor and connection
     cursor.close()
     conn.close()
-
     context = {
         'label_name': label_name,
-        'user_roles': user_roles,
         'self_name': self_name[0],
         'artists_name': artists_name,
         'songwriters_name': songwriters_name,
-        'user_email': user_email,
-        'genres': genres
+        'genres': genres,
+        'user': user
     }
 
     return render(request, "create_album.html", context)
@@ -55,33 +54,33 @@ def show_create_lagu_songwriter(request):
     return render(request, "create_lagu_songwriter.html", context)
 
 
-def show_list_album(request, user_email, user_roles):
+def show_list_album(request):
+    user = context_user.context_user_getter(request)
     conn = get_db_connection()
     cursor = conn.cursor()
     cur2 = conn.cursor()
     cur3 = conn.cursor()
     album = ""
-    if user_roles == "Artist":
-        cur2.execute("SELECT id FROM ARTIST A WHERE a.email_akun=%s", (user_email,))
+    if user['roles'] == "Artist":
+        cur2.execute("SELECT id FROM ARTIST A WHERE a.email_akun=%s", (user['email'],))
         id_artist = cur2.fetchone()
         cursor.execute("SELECT DISTINCT judul, jumlah_lagu, total_durasi, l.nama, album.id FROM ALBUM, LABEL L, SONG S WHERE l.id = id_label AND s.id_artist=%s AND album.id=s.id_album", (id_artist,))
         album = cursor.fetchall()
-    elif user_roles == "Songwriter":
-        cur2.execute("SELECT id FROM SONGWRITER S WHERE s.email_akun=%s", (user_email,))
+    elif user['roles'] == "Songwriter":
+        cur2.execute("SELECT id FROM SONGWRITER S WHERE s.email_akun=%s", (user['email'],))
         id_songwriter = cur2.fetchone()
         cursor.execute("SELECT DISTINCT judul, jumlah_lagu, total_durasi, l.nama, album.id FROM ALBUM, LABEL L, SONGWRITER_WRITE_SONG S, SONG O WHERE l.id = id_label AND s.id_songwriter=%s AND album.id=o.id_album AND s.id_song=o.id_konten", (id_songwriter,))
         album = cursor.fetchall()
     else:
-        cur2.execute("SELECT id FROM SONGWRITER S WHERE s.email_akun=%s", (user_email,))
-        cur3.execute("SELECT id FROM ARTIST A WHERE a.email_akun=%s", (user_email,))
+        cur2.execute("SELECT id FROM SONGWRITER S WHERE s.email_akun=%s", (user['email'],))
+        cur3.execute("SELECT id FROM ARTIST A WHERE a.email_akun=%s", (user['email'],))
         id_songwriter = cur2.fetchone()
         id_artist = cur3.fetchone()
         cursor.execute("SELECT DISTINCT judul, jumlah_lagu, total_durasi, l.nama, album.id FROM ALBUM, LABEL L, SONGWRITER_WRITE_SONG S, SONG O WHERE l.id = id_label AND s.id_songwriter=%s AND album.id=o.id_album AND s.id_song=o.id_konten AND o.id_artist=%s", (id_songwriter, id_artist,))
         album = cursor.fetchall()
     context = {
         'album_query': album,
-        'user_email': user_email,
-        'user_roles': user_roles
+        'user':user
     }
     cursor.close()
     conn.close()

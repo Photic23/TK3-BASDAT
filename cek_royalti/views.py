@@ -4,9 +4,11 @@ from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 import psycopg2
 from main.connect import get_db_connection
+from utils import context_user
 
 # Create your views here.
-def show_main(request, user_email):
+def show_main(request):
+    user = context_user.context_user_getter(request)
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
@@ -17,13 +19,14 @@ def show_main(request, user_email):
                     JOIN ARTIST r ON s.id_artist = r.id
                     JOIN PEMILIK_HAK_CIPTA phc ON r.id = s.id_artist
                     JOIN ROYALTI rt ON rt.id_pemilik_hak_cipta = phc.id AND rt.id_song = s.id_konten
-                    WHERE r.email_akun = %s""", (user_email,))
+                    WHERE r.email_akun = %s""", (user['email'],))
     royalti = cursor.fetchall()
     cursor.close()
     conn.close()
 
     context = {
-        'royalti_query': royalti
+        'royalti_query': royalti,
+        'user': user
     }
 
     return render(request, "list_royalti.html", context)
