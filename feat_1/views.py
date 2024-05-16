@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from main.connect import get_db_connection
 from django.views.decorators.http import require_http_methods
 from utils import context_user
+import uuid
 
 # Create your views here.
 
@@ -37,6 +38,7 @@ def add_subscription(request):
 @require_http_methods(['GET', 'POST'])
 def pay_subscription(request):
     if request.method == 'POST':
+        id = uuid
         jenis_paket = request.POST['jenis_paket']
         harga = request.POST['harga_paket']
         metode_pembayaran = request.POST['payment']
