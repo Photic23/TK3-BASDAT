@@ -27,6 +27,28 @@ def hapus_playlist(request):
     conn.close()
     return HttpResponse(b"DELETED", status=201)
 
+def hapus_lagu(request):
+    konten_id = request.GET.get('konten_id', None)
+    playlist_id = request.GET.get('playlist_id', None)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Lakukan operasi penghapusan data
+    cursor.execute("DELETE FROM PLAYLIST_SONG WHERE id_song = %s", (konten_id,))
+    cursor.execute("UPDATE USER_PLAYLIST SET jumlah_lagu = jumlah_lagu - 1 WHERE id_playlist = %s", [playlist_id])
+    cursor.execute("""
+            UPDATE USER_PLAYLIST
+            SET total_durasi = USER_PLAYLIST.total_durasi - KONTEN.durasi
+            FROM KONTEN
+            WHERE KONTEN.id = %s AND USER_PLAYLIST.id_playlist = %s
+        """, [konten_id, playlist_id])
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+    return HttpResponse(b"DELETED", status=201)
+
 def add_lagu_playlist(request):
     playlist_id = request.GET.get('playlist_id', None)
 
@@ -75,6 +97,13 @@ def tambah_lagu(request):
         id_konten = cursor.fetchone()[0]
 
         cursor.execute("INSERT INTO PLAYLIST_SONG (id_playlist, id_song) VALUES (%s, %s)", [playlist_id, id_konten])
+        cursor.execute("UPDATE USER_PLAYLIST SET jumlah_lagu = jumlah_lagu + 1 WHERE id_playlist = %s", [playlist_id])
+        cursor.execute("""
+            UPDATE USER_PLAYLIST
+            SET total_durasi = USER_PLAYLIST.total_durasi + KONTEN.durasi
+            FROM KONTEN
+            WHERE KONTEN.id = %s AND USER_PLAYLIST.id_playlist = %s
+        """, [id_konten, playlist_id])
         
         conn.commit()
         cursor.close()
@@ -187,7 +216,8 @@ def detail_playlist(request):
         SELECT 
             K.judul,
             AK.nama,
-            K.durasi
+            K.durasi,
+            K.id
         FROM 
             PLAYLIST_SONG PS
         JOIN 
@@ -213,24 +243,6 @@ def detail_playlist(request):
     conn.close()
 
     return render(request, "detail_playlist.html", context)
-
-def add_to_playlist(request):
-    return render(request, 'add_to_playlist.html')
-
-def download_song(request):
-    return render(request, 'download_song.html')
-
-def failed_download(request):
-    return render(request, 'failed_download.html')
-
-def failed_message(request):
-    return render(request, 'failed_message.html')
-
-def song_detail(request):
-    return render(request, 'song_detail.html')
-
-def success_message(request):
-    return render(request, 'success_message.html')
 
 def kelola_playlist_terisi(request):
     user = context_user.context_user_getter(request)

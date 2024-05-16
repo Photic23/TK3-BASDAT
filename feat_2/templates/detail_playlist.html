@@ -94,10 +94,9 @@
                                 <class="w-5 h-5 text-white me-2">
                                 Play
                             </button>
-                            <button type="delete_album" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
-                                <class="w-5 h-5 text-white me-2">
+                            <button onclick="redirectDelete('{{ songs.3 }}', '{{ detail_playlist.0.6 }}')" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">
                                 Hapus
-                            </button> 
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -124,6 +123,10 @@
     function redirectToAdd(playlistID) {
     window.location.href = `/playlist/add_lagu_playlist?playlist_id=${encodeURIComponent(playlistID)}`;
     }
+    function redirectDelete(kontenID, playlistID) {
+    window.location.href = `/playlist/hapus_lagu?konten_id=${encodeURIComponent(kontenID)}&playlist_id=${encodeURIComponent(playlistID)}`;
+    }
+
 </script>
 {% endblock content %}
 </html>
