@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock meta %}
+
+{% block content %}
+
+    <div class="flex flex-col gap-2 h-screen mx-3 my-2">
+        <div class="max-w-screen-xl mx-auto p-3">
+            <form method="GET" action="{% url 'feat_1:search' %}" class="flex items-center">
+                <div class="w-full">
+                    <input type="text" name="query" placeholder="Search song, podcast, and playlist..." class="w-full rounded-l-md px-4 py-2 border-t border-b border-l text-gray-800 border-gray-200 bg-white focus:outline-none">
+                </div>
+                <button type="submit" class="px-4 py-2 border border-gray-300 bg-gray-200 text-gray-700 rounded-r-md hover:bg-gray-300 focus:outline-none">Search</button>
+            </form>
+        </div>
+        {% if song_list or playlist_list or podcast_list %}
+        <h1 class="text-xl font-bold">Hasil pencarian untuk : {{ query }}</h1> 
+        <div class="flex flex-col gap-3 py-2"> 
+            {% for song in song_list %}
+            <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
+                <div class="flex items-center gap-6 mr-6">
+                    <h1 class="flex items-center justify-center font-bold text-black text-sm w-16 aspect-square border rounded-full bg-green-500">SONG</h1>
+                    <img src={% static 'playlist_image.jpg' %} alt="Playlist" class="w-10 h-10 rounded-full">
+                </div>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-black">{{ song.judul }}</h3>
+                    <p class="text-sm text-gray-400">{{ song.artist_name }}</p>
+                </div>
+                <div class="flex flex-col justify-center items-center">
+                    <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% for podcast in podcast_list %}
+            <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
+                <div class="flex items-center gap-6 mr-6">
+                    <h1 class="flex items-center justify-center font-bold text-black text-sm w-16 aspect-square border rounded-full bg-green-500">PODC</h1>
+                    <img src={% static 'playlist_image.jpg' %} alt="Playlist" class="w-10 h-10 rounded-full">
+                </div>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-black">{{ podcast.judul }}</h3>
+                    <p class="text-sm text-gray-400">{{ podcast.podcaster_name }}</p>
+                </div>
+                <div class="flex flex-col justify-center items-center">
+                    <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% for playlist in playlist_list %}
+            <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
+                <div class="flex items-center gap-6 mr-6">
+                    <h1 class="flex items-center justify-center font-bold text-black text-sm w-16 aspect-square border rounded-full bg-green-500">PLAYLIST</h1>
+                    <img src={% static 'playlist_image.jpg' %} alt="Playlist" class="w-10 h-10 rounded-full">
+                </div>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-black">{{ playlist.judul }}</h3>
+                    <p class="text-sm text-gray-400">{{ playlist.user_name }}</p>
+                </div>
+                <div class="flex flex-col justify-center items-center">
+                    <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div> 
+        {% else %}
+        <h2 class="p-2 text-center">Maaf, pencarian untuk {{ query }} tidak ditemukan.</h2>
+
+        {% endif %}    
+        
+    </div>
+{% endblock content %}

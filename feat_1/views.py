@@ -10,12 +10,10 @@ def daftar_playlist_page(request):
     user = context_user.context_user_getter(request)
     email = user['email']
     connection = get_db_connection()
-    print(email)
 
     cursor = connection.cursor()
     cursor.execute(f"SELECT * FROM AKUN_PLAY_USER_PLAYLIST WHERE email_pemain = '{email}'")
     playlist_data = cursor.fetchall()
-    print(playlist_data)
     context = {
         'playlist_data': playlist_data,
         'user_name': user['nama']
@@ -92,11 +90,38 @@ def subscription_history(request):
     }
     return render(request, 'riwayat-langganan.html', context)
 
-def test_searchbar(request):
+def search(request):
+    user = context_user.context_user_getter(request)
+    query = request.GET.get('query')
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT judul, AKUN.nama, k.id FROM KONTEN k JOIN SONG ON k.id = SONG.id_konten JOIN ARTIST ON SONG.id_artist = ARTIST.id JOIN AKUN ON AKUN.email = ARTIST.email_akun WHERE k.judul ILIKE '%{query}%';")
+    list_lagu = cursor.fetchall()
+    cursor.execute(f"SELECT judul, AKUN.nama, k.id FROM KONTEN k JOIN PODCAST ON k.id = PODCAST.id_konten JOIN PODCASTER ON PODCAST.email_podcaster = PODCASTER.email JOIN AKUN ON AKUN.email = PODCASTER.email WHERE k.judul ILIKE '%{query}%';")
+    list_podcast = cursor.fetchall()
+    cursor.execute(f"SELECT judul, AKUN.nama, id_user_playlist FROM USER_PLAYLIST p JOIN AKUN ON AKUN.email = p.email_pembuat WHERE p.judul ILIKE '%{query}%';")
+    list_playlist = cursor.fetchall()
+
     context = {
-        'username': "Scarletra",
+        'query': query,
+        'song_list': [{
+                'judul': row[0],
+                'artist_name': row[1],
+                'id': row[2]
+                } for row in list_lagu],
+        'podcast_list': [{
+                'judul': row[0],
+                'podcaster_name': row[1],
+                'id': row[2]
+                } for row in list_podcast],
+        'playlist_list': [{
+                'judul': row[0],
+                'user_name': row[1],
+                'id': row[2]
+                } for row in list_playlist],
+        'user': user
     }
-    return render(request, 'search-bar-code.html', context)
+    return render(request, 'hasil-pencarian.html', context)
 
 def delete_from_downloaded(request, id):
     user = context_user.context_user_getter(request)

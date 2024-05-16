@@ -9,6 +9,7 @@
 
 <div class="flex flex-col gap-2 h-screen mx-3 my-2">
     <h1 class="text-xl text-center font-bold">DAFTAR LAGU</h1> 
+    {% if song_list %}
     <div class="flex flex-col gap-3 py-2">
         {% for song in song_list %}
         <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
@@ -27,6 +28,9 @@
             </div>
         </div>
         {% endfor %}
+    {% else %}
+    <h2>Anda belum mendownload lagu apapun</h2>
+    {% endif %}
 
     </div>
     <a href={% url 'main:show_dashboard' %}><a href={% url 'main:show_dashboard' %}><button class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded w-full">
