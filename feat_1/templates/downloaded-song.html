@@ -10,53 +10,38 @@
 <div class="flex flex-col gap-2 h-screen mx-3 my-2">
     <h1 class="text-xl text-center font-bold">DAFTAR LAGU</h1> 
     <div class="flex flex-col gap-3 py-2">
+        {% for song in song_list %}
         <div class="flex flex-row justify-between items-center px-6 py-3 border-b border-gray-200 bg-[#d1d9e0] rounded-lg">
             <div class="flex items-center gap-6 mr-6">
                 <img src="{% static 'playlist_image.jpg' %}" alt="Playlist" class="w-10 h-10 rounded-full">
             </div>
             <div class="flex flex-col flex-grow">
-                <h3 class="text-xl font-bold text-black">Love is in the air</h3>
-                <p class="text-sm text-gray-400">Artis : Artist1</p>
-                <p class="text-sm text-gray-400">Tanggal Download : 14/03/2024</p>
+                <h3 class="text-xl font-bold text-black">{{ song.song_title }}</h3>
+                <p class="text-sm text-gray-400">Artis : {{ song.artist_name }}</p>
             </div>
             <div class="flex justify-center items-center gap-2">
                 <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
-                <button @click="showModal = true" class="focus:outline-none">
+                <button onclick="confirmDelete('{{ song.id }}', '{{ song.song_title }}')" class="focus:outline-none">
                     <img src="{% static 'trash_icon.png' %}" alt="Trash Icon" class="w-8 h-8 rounded-full">
                 </button>
             </div>
         </div>
-
-        <!-- Other song details -->
+        {% endfor %}
 
     </div>
-    <button class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded w-full">
+    <a href={% url 'main:show_dashboard' %}><a href={% url 'main:show_dashboard' %}><button class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded w-full">
         Kembali
-    </button>
+    </button></a>
 </div>
 
-<!-- Modal -->
-{% comment %} <div class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
-    <div class="relative w-auto max-w-lg mx-auto my-6">
-        <!-- Content -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <div class="flex justify-end">
-                <button @click="showModal = false" class="text-gray-400 hover:text-gray-600 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div class="mt-4">
-                <!-- Modal content -->
-                <p class="text-lg text-center font-semibold text-black">Berhasil menghapus Lagu dengan judul ‘Song1’ dari daftar unduhan!</p>
-                <div class="flex justify-center mt-6">
-                    <button @click="showModal = false" class="py-2 px-4 mr-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400">Ok</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> {% endcomment %}
-<div class="fixed inset-0 z-40 bg-black opacity-25"></div>
+<script>
+    function confirmDelete(songId, songTitle) {
+        if (confirm("Berhasil menghapus lagu dengan judul " + songTitle)) {
+            window.location.href = '/user/delete-song/' + songId + '/';
+        } else {
+            window.location.href = '/user/delete-song/' + songId + '/';
+        }
+    }
+</script>
 
 {% endblock content %}

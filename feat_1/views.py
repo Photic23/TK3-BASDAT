@@ -79,19 +79,18 @@ def subscription_history(request):
     connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute(f"SELECT jenis_paket, timestamp_dimulai, timestamp_berakhir, metode_bayar, nominal FROM TRANSACTION WHERE email = '{user['email']}'")
-    data_playlist = cursor.fetchall()
-    print(data_playlist)
-    riwayat = {
-        'data_playlist': [{
+    data_langganan = cursor.fetchall()
+    context = {
+        'data_langganan': [{
             'jenis_paket': row[0],
             'timestamp_dimulai': row[1],
             'timestamp_berakhir': row[2],
             'metode_bayar': row[3],
             'nominal': row[4],
-            } for row in data_playlist],
+            } for row in data_langganan],
         'user': user,
     }
-    return render(request, 'riwayat-langganan.html', riwayat)
+    return render(request, 'riwayat-langganan.html', context)
 
 def test_searchbar(request):
     context = {
@@ -99,17 +98,37 @@ def test_searchbar(request):
     }
     return render(request, 'search-bar-code.html', context)
 
+def delete_from_downloaded(request, id):
+    user = context_user.context_user_getter(request)
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(f"UPDATE SONG SET total_download = total_download - 1 WHERE id_konten = '{id}';")
+    connection.commit()
+    cursor.execute(f"DELETE FROM DOWNLOADED_SONG WHERE id_song = '{id}' AND email_downloader = '{user['email']}';")
+    connection.commit()
+    cursor.close()
+    connection.close()
+    
+    return redirect('feat_1:downloaded_song')
+
 def downloaded_song(request):
     user = context_user.context_user_getter(request)
     if user['premium_status'] == "Premium":
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM DOWNLOADED_SONG WHERE email_downloader = '{user['email']}'")
+        cursor.execute(f"SELECT KONTEN.judul AS song_title, AKUN.nama AS artist_name, d.id_song as id FROM DOWNLOADED_SONG d JOIN SONG ON d.id_song = SONG.id_konten JOIN KONTEN ON SONG.id_konten = KONTEN.id JOIN ARTIST ON SONG.id_artist = ARTIST.id JOIN AKUN on ARTIST.email_akun = AKUN.email WHERE d.email_downloader = '{user['email']}';")
         downloaded_song = cursor.fetchall()
-        print(downloaded_song)
+        context = {
+            'song_list': [{
+                'song_title': row[0],
+                'artist_name': row[1],
+                'id': row[2]
+                } for row in downloaded_song],
+            'user': user,
+        }
         cursor.close()
         connection.close()
-        return render(request, 'downloaded-song.html', user)
+        return render(request, 'downloaded-song.html', context)
     else:
         return redirect('main:show_dashboard')
 
