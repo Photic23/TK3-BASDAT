@@ -55,7 +55,6 @@ def pay_subscription(request):
             
             connection = get_db_connection()
             cursor = connection.cursor()
-            print(package)
             cursor.execute(f"SELECT jenis, harga FROM PAKET WHERE jenis = '{package}'")
             paket = cursor.fetchone()
             cursor.close()
@@ -74,11 +73,25 @@ def pay_subscription(request):
         else:
             return HttpResponse("No package selected.")
 
+@require_http_methods(['GET'])
 def subscription_history(request):
-    context = {
-        'username': "Scarletra",
+    user = context_user.context_user_getter(request)
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT jenis_paket, timestamp_dimulai, timestamp_berakhir, metode_bayar, nominal FROM TRANSACTION WHERE email = '{user['email']}'")
+    data_playlist = cursor.fetchall()
+    print(data_playlist)
+    riwayat = {
+        'data_playlist': [{
+            'jenis_paket': row[0],
+            'timestamp_dimulai': row[1],
+            'timestamp_berakhir': row[2],
+            'metode_bayar': row[3],
+            'nominal': row[4],
+            } for row in data_playlist],
+        'user': user,
     }
-    return render(request, 'riwayat-langganan.html', context)
+    return render(request, 'riwayat-langganan.html', riwayat)
 
 def test_searchbar(request):
     context = {
