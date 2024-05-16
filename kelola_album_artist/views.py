@@ -97,6 +97,16 @@ def form_album(request):
     
     return HttpResponseNotFound()
 
+def delete_album(request, albumID):
+    user = context_user.context_user_getter(request)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    print(albumID)
+    cursor.execute("DELETE FROM ALBUM WHERE id=%s", (album_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return redirect('kelola-album-artist:show_artist')
 
 def show_create_lagu(request):
     context = {
