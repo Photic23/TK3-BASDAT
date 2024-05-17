@@ -56,10 +56,6 @@ def pay_subscription(request):
         else:
             interval = '1 years'; harga = 420000
         
-        print(jenis_paket)
-        print(harga)
-        print(metode_pembayaran)
-        
         try:
             connection = get_db_connection()
             cursor = connection.cursor()
@@ -78,9 +74,6 @@ def pay_subscription(request):
             else:
                 print(e)
                 return HttpResponse("Error occurred while connecting to the database")
-            
-            
-        
     
     else:
         package = request.GET.get('package')

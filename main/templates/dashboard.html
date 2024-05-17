@@ -64,16 +64,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="bg-gray-600">
-                    <td class="text-center">Data 1</td>
-                    <td class="text-center">Data 2</td>
-                    <td class="text-center">Data 3</td>
-                </tr>
-                <tr class="bg-gray-600">
-                    <td class="text-center">Data 5</td>
-                    <td class="text-center">Data 6</td>
-                    <td class="text-center">Data 7</td>
-                </tr>
+                {% if album_list %}
+                    {% for album in album_list %}
+                    <tr class="bg-gray-600">
+                        <td class="text-center">{{ album.judul }}</td>
+                        <td class="text-center">{{ album.total_durasi }} menit</td>
+                        <td class="text-center">Data 3</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <p>Belum memproduksi album</p>
+                {% endif %}
             </tbody>
         </table>
         {% endif %}
@@ -89,16 +90,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="bg-gray-600">
-                    <td class="text-center">Data 1</td>
-                    <td class="text-center">Data 2</td>
-                    <td class="text-center">Data 3</td>
-                </tr>
-                <tr class="bg-gray-600">
-                    <td class="text-center">Data 5</td>
-                    <td class="text-center">Data 6</td>
-                    <td class="text-center">Data 7</td>
-                </tr>
+                {% if song_list %}
+                    {% for song in song_list %}
+                    <tr class="bg-gray-600">
+                        <td class="text-center">{{ song.judul }}</td>
+                        <td class="text-center">{{ song.durasi }} menit</td>
+                        <td class="text-center">Data 3</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <p>Belum memiliki lagu</p>
+                {% endif %}
             </tbody>
         </table>
         {% endif %}
