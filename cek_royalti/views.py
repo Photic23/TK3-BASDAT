@@ -12,6 +12,7 @@ def show_main(request):
     conn = get_db_connection()
     cursor = conn.cursor()
     royalti = ""
+    print(user['roles'])
     if user['roles'] == "Artist":
         cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
                             s.total_play * phc.rate_royalti AS royalties 
@@ -35,6 +36,17 @@ def show_main(request):
                         JOIN ROYALTI rt ON rt.id_pemilik_hak_cipta = phc.id AND rt.id_song = s.id_konten
                         WHERE sr.email_akun = %s""", (user['email'],))
         royalti = cursor.fetchall()
+    elif user['roles'] == None:
+        cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
+        s.total_play * phc.rate_royalti AS royalties 
+        FROM KONTEN k
+        JOIN SONG s ON s.id_konten = k.id
+        JOIN ALBUM a ON s.id_album = a.id
+        JOIN LABEL l ON a.id_label = l.id
+        JOIN PEMILIK_HAK_CIPTA phc ON l.id = a.id_label
+        JOIN ROYALTI rt ON rt.id_pemilik_hak_cipta = phc.id AND rt.id_song = s.id_konten
+        WHERE l.email = %s""", (user['email'],))
+        royalti = cursor.fetchall()
     else:
         cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
                             s.total_play * phc.rate_royalti AS royalties 
@@ -49,7 +61,7 @@ def show_main(request):
                         WHERE sr.email_akun = %s""", (user['email'],))
         royalti = cursor.fetchall()
 
-
+    print(royalti)
 
     cursor.close()
     conn.close()
