@@ -247,10 +247,10 @@
     <a href="#" onclick="window.history.back();" class="marmoot-button">Back</a>
     <h1>Create Podcast</h1>
     <div>
-        <form method="POST" action="">
+        <form method="POST" action="{% url 'podcast:show_podcast_list' %}">
             {% csrf_token %}
             <label for="title">Judul: </label>
-            <input type="text" id="title" name="title">
+            <input type="text" id="title" name="title" required>
 
             <label for="artist">Genre: </label>
             <div style="display: flex; align-items: center; width: 90%;"> <!-- Adjusted styling for artist section -->
@@ -300,10 +300,10 @@
                     <option value="Gospel">Gospel</option>
                     <option value="Jazz">Jazz</option>
                     <option value="Crime">Crime</option>
-                </select>
+                </select >
                 <button type="button" style="width: 100px;" onclick="addArtist()">Add Genre</button>
             </div>
-            <input type="text" id="artistInput" name="artist" readonly>
+            <input type="text" onkeydown="return false;" id="artistInput" name="artist" required>
             
             <input type="submit" value="Submit">
         </form>

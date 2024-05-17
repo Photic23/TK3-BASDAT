@@ -172,12 +172,12 @@
     <nav class="navbar">
         <a href="#" class="navbar-brand">Marmoot</a>
         <ul class="navbar-nav">
-            <li class="nav-item"><a href="{% url 'main:show_dashboard_podcast' %}" class="nav-link">Dashboard</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Dashboard</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Chart</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Search Bar</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Kelola Playlist</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Langanan Paket</a></li>
-            <li class="nav-item"><a href="{% url 'podcast:show_podcast_list' %}" class="nav-link">Podcast</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Podcast</a></li>
         </ul>
     </nav>
     <a href="#" onclick="window.history.back();" class="marmoot-button">Back</a>
@@ -194,36 +194,20 @@
                 <th>Total Durasi</th>
                 <th>Action</th>
             </tr>
-            <tr>
-                <td>Podcast 1</td>
-                <td>0</td>
-                <td>0 Menit</td>
-                <td>
-                    <a class="row-button" href="{% url 'podcast:show_episode_list' %}">[lihat daftar episode]</a>
-                    <br>
-                    <a class="row-button" href="{% url 'podcast:show_create_episode' %}">[tambah episode]</a>
-                    <br>
-                    <a class="row-button" href="#">[hapus]</a>
-                </td>
-            </tr>
-            <tr>
-                <td>Podcast 2</td>
-                <td>2</td>
-                <td>4 Menit</td>
-                <td>
-                    <a class="row-button" href="{% url 'podcast:show_episode_list' %}">[lihat daftar episode]</a>
-                    <br>
-                    <a class="row-button" href="{% url 'podcast:show_create_episode' %}">[tambah episode]</a>
-                    <br>
-                    <a class="row-button" href="#">[hapus]</a>
-                </td>
-            </tr>
-            <tr>
-                <td>...</td>
-                <td >...</td>
-                <td>...</td>
-                <td >...</td>
-            </tr>
+            {% for podcast in podcasts %}
+                <tr>
+                    <td>{{podcast.1}}</td>
+                    <td>{{podcast.3}}</td>
+                    <td>{{podcast.2}}</td>
+                    <td>
+                        <a class="row-button" href="{% url 'podcast:show_episode_list' %}">[lihat daftar episode]</a>
+                        <br>
+                        <a class="row-button" href="{% url 'podcast:show_create_episode' %}">[tambah episode]</a>
+                        <br>
+                        <a class="row-button" href="#">[hapus]</a>
+                    </td>
+                </tr>
+            {% endfor %}
         </table>
     </div>
 </body>
