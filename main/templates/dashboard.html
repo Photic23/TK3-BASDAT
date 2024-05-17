@@ -23,30 +23,37 @@
         <label for="email" class="block">Email:</label>
         <p id="email" class="text-gray-300">{{ user.email }}</p>
 
-        <label for="city" class="block">Kota Asal:</label>
-        <p id="city" class="text-gray-300">{{ data.kota_asal }}</p>
+        {% if user.roles == None %}
+        <label for="city" class="block">Kontak:</label>
+        <p id="city" class="text-gray-300">{{ data.kontak }}</p>
 
-        <label for="gender" class="block">Gender:</label>
-        {% if data.gender == 0 %}
-        <p id="gender" class="text-gray-300">Perempuan</p>
         {% else %}
-        <p id="gender" class="text-gray-300">Laki-laki</p>
+            <label for="city" class="block">Kota Asal:</label>
+            <p id="city" class="text-gray-300">{{ data.kota_asal }}</p>
+
+            <label for="gender" class="block">Gender:</label>
+            {% if data.gender == 0 %}
+            <p id="gender" class="text-gray-300">Perempuan</p>
+            {% else %}
+            <p id="gender" class="text-gray-300">Laki-laki</p>
+            {% endif %}
+
+            <label for="birthplace" class="block">Tempat Lahir:</label>
+            <p id="birthplace" class="text-gray-300">{{ data.tempat_lahir }}</p>
+
+            <label for="birthdate" class="block">Tanggal Lahir:</label>
+            <p id="birthdate" class="text-gray-300">{{ data.tanggal_lahir }}</p>
+
+            <label for="role" class="block">Role:</label>
+            {% if 'Pengguna_biasa' in user.roles %}
+            <p id="role" class="text-gray-300">Pengguna biasa</p>
+            {% else %}
+            <p id="role" class="text-gray-300">{{ user.roles }}</p>
+            {% endif %}
+
         {% endif %}
 
-        <label for="birthplace" class="block">Tempat Lahir:</label>
-        <p id="birthplace" class="text-gray-300">{{ data.tempat_lahir }}</p>
-
-        <label for="birthdate" class="block">Tanggal Lahir:</label>
-        <p id="birthdate" class="text-gray-300">{{ data.tanggal_lahir }}</p>
-
-        <label for="role" class="block">Role:</label>
-        {% if 'Pengguna_biasa' in user.roles %}
-        <p id="role" class="text-gray-300">Pengguna biasa</p>
-        {% else %}
-        <p id="role" class="text-gray-300">{{ user.roles }}</p>
-        {% endif %}
-
-        {% if user.kontak %}
+        {% if data.kontak %}
         <h2 class="text-lg font-bold mt-4 mb-2">Album List</h2>
         <table class="w-full table-auto">
             <thead>

@@ -71,14 +71,15 @@ def login(request):
                 premium.email;""")
             
             account = cursor.fetchone()
-            user = {
-                'email': account[0],
-                'nama': account[2],
-                'roles': account[8],
-                'premium_status': account[9]
-            }
             
             if account is not None:
+                user = {
+                    'email': account[0],
+                    'nama': account[2],
+                    'roles': account[8],
+                    'premium_status': account[9]
+                }
+                
                 request.session['nama'] = user['nama']
                 request.session['email'] = user['email']
                 request.session['roles'] = user['roles']
@@ -86,8 +87,28 @@ def login(request):
 
                 return redirect('main:show_dashboard')
             else:
-                messages.error(request, 'Email or password is incorrect')
-                return redirect('main:login')
+                cursor.execute(f"SELECT * FROM LABEL WHERE email = '{email}' AND password = '{password}';")
+                label = cursor.fetchone()
+                
+                if label is not None:
+                    user = {
+                        'email': label[2],
+                        'nama': label[1],
+                        'kontak': label[4],
+                        'id': label[0],
+                        'id_pemilik_hak_cipta': label[5]
+                    }
+                    
+                    request.session['nama'] = user['nama']
+                    request.session['email'] = user['email']
+                    request.session['roles'] = None
+                    request.session['premium_status'] = None
+        
+                    return redirect('main:show_dashboard')
+
+                else:    
+                    messages.error(request, 'Email or password is incorrect')
+                    redirect('main:login')
 
         except psycopg2.Error as e:
             print(e)
@@ -117,20 +138,32 @@ def show_dashboard(request):
     connection = get_db_connection()
     user = context_user.context_user_getter(request)
     cursor = connection.cursor()
-    cursor.execute(f"SELECT gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal FROM AKUN WHERE email = '{user['email']}'")
-    user_data = cursor.fetchone()
-    print(user_data[0])
-    data = {
-        'gender': user_data[0],
-        'tempat_lahir': user_data[1],
-        'tanggal_lahir': user_data[2],
-        'is_verified': user_data[3],
-        'kota_asal': user_data[4]
-    }
-    context = {
-        'user': user,
-        'data': data
-    }
+    if user['roles'] is not None: 
+        cursor.execute(f"SELECT gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal FROM AKUN WHERE email = '{user['email']}'")
+        user_data = cursor.fetchone()
+        data = {
+            'gender': user_data[0],
+            'tempat_lahir': user_data[1],
+            'tanggal_lahir': user_data[2],
+            'is_verified': user_data[3],
+            'kota_asal': user_data[4]
+        }
+        context = {
+            'user': user,
+            'data': data
+        }
+    else:
+        cursor.execute(f"SELECT id, kontak, id_pemilik_hak_cipta FROM LABEL WHERE email = '{user['email']}'")
+        user_data = cursor.fetchone()
+        data = {
+            'id': user_data[0],
+            'kontak': user_data[1],
+            'pemilik_hak_cipta': user_data[2],
+        }
+        context = {
+            'user': user,
+            'data': data
+        }
     
     return render(request, "dashboard.html", context)
 
