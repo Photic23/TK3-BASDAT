@@ -47,20 +47,61 @@
                 <p class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><strong>Total Downloads: {{detail_song.0.8}}</strong> <span id="totaldownloads"></span></p>
                 <p class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><strong>Album: {{detail_song.0.9}}</strong> <span id="albums"></span></p>
             </div>
+            <div class="progress-container">
+                <label for="progress-input">Progress:</label>
+                <input class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" type="number" id="progress-input" name="progress-input" min="0" max="100" value="0">
+            </div>
+            <br>
+            <button id="play-button" class="blockButton bg-blue-500 text-white py-2 px-4 rounded">Play</button>
+            <br>
+            <button id="add-to-playlist-button" class="blockButton bg-blue-500 text-white py-2 px-4 rounded">Add to Playlist</button>
+            <br>
+            <button id="download" class="blockButton bg-blue-500 text-white py-2 px-4 rounded">Download</button>
+            <p id="message" class="text-sm text-gray-500 mt-2"></p>
             {% else %}
-            <p>Detail playlist tidak ditemukan.</p>
+            <p>Detail lagu tidak ditemukan.</p>
             {% endif %}
-            <!-- <button onclick="redirectToAdd('{{ detail_playlist.0.6 }}')" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                Tambah Lagu
-                </span>
-            </button> -->
         </div><br>
     </div>
 
 </body>
 
 <script>
+function redirectToAdd(kontenID) {
+    window.location.href = `/playlist/add_to_playlist?konten_id=${encodeURIComponent(kontenID)}`;
+}
+
+function redirectToDownload(kontenID) {
+    window.location.href = `/playlist/download?konten_id=${encodeURIComponent(kontenID)}`;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('progress-input');
+    const playButton = document.getElementById('play-button');
+    const addToPlaylistButton = document.getElementById('add-to-playlist-button');
+    const download = document.getElementById('download');
+    const message = document.getElementById('message');
+
+    playButton.addEventListener('click', function() {
+        const progress = parseInt(input.value);
+        if (progress > 70) {
+            const timestamp = new Date().toLocaleString();
+            message.textContent = `AKUN_PLAY_SONG entry added with timestamp: ${timestamp}`;
+            // Simulate updating total play count
+            console.log('Total play count updated');
+        } else {
+            message.textContent = 'Progress is not enough to play the song.';
+        }
+    });
+
+    addToPlaylistButton.addEventListener('click', function() {
+        redirectToAdd('{{ konten_id }}');
+    });
+
+    download.addEventListener('click', function() {
+        redirectToDownload('{{ konten_id }}');
+    });
+});
 </script>
 {% endblock content %}
 </html>

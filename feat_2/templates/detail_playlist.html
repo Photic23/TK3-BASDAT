@@ -46,6 +46,11 @@
             {% else %}
             <p>Detail playlist tidak ditemukan.</p>
             {% endif %}
+            <button onclick="redirectToShuffle('{{ detail_playlist.0.7 }}')" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    Shuffle
+                </span>
+            </button>
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800" style="text-align: center;">
                     User Playlist
@@ -86,11 +91,11 @@
                             {{ songs.2 }} 
                         </td>
                         <td class="px-6 py-4">
-                            <button type="list_song" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
+                            <button onclick="redirectToSee('{{ songs.3 }}')" type="list_song" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
                                 <class="w-5 h-5 text-white me-2">
                                 Lihat
                             </button>
-                            <button type="add_song" onclick="" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
+                            <button onclick="redirectToPlay('{{ songs.3 }}')" type="add_song" onclick="" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
                                 <class="w-5 h-5 text-white me-2">
                                 Play
                             </button>
@@ -121,10 +126,19 @@
 
 <script>
     function redirectToAdd(playlistID) {
-    window.location.href = `/playlist/add_lagu_playlist?playlist_id=${encodeURIComponent(playlistID)}`;
+        window.location.href = `/playlist/add_lagu_playlist?playlist_id=${encodeURIComponent(playlistID)}`;
     }
     function redirectDelete(kontenID, playlistID) {
-    window.location.href = `/playlist/hapus_lagu?konten_id=${encodeURIComponent(kontenID)}&playlist_id=${encodeURIComponent(playlistID)}`;
+        window.location.href = `/playlist/hapus_lagu?konten_id=${encodeURIComponent(kontenID)}&playlist_id=${encodeURIComponent(playlistID)}`;
+    }
+    function redirectToSee(kontenID) {
+        window.location.href = `/playlist/song_detail?konten_id=${encodeURIComponent(kontenID)}`;
+    }
+    function redirectToShuffle(userplaylistID) {
+        window.location.href = `/playlist/shuffle?user_playlist_id=${encodeURIComponent(userplaylistID)}`;
+    }
+    function redirectToPlay(kontenID) {
+        window.location.href = `/playlist/play_song?konten_id=${encodeURIComponent(kontenID)}`;
     }
 
 </script>

@@ -9,6 +9,8 @@ from utils import context_user
 from django.views.decorators.csrf import csrf_exempt
 import json
 import uuid
+from psycopg2.errors import UndefinedColumn
+from django.db import DatabaseError
 
 def tambah_playlist(request):
     return render(request, 'tambah_playlist.html')
@@ -87,8 +89,6 @@ def tambah_lagu(request):
     cursor = conn.cursor()
 
     if request.method == 'POST':
-        playlist_name = request.POST.get('playlistName')  # Sesuaikan dengan nama input dalam HTML
-        deskripsi = request.POST.get('deskripsi')
         playlist_id =  request.POST.get('playlist_id')
         judul_lagu = request.POST.get('judul_lagu')
         judul_lagu = judul_lagu.split(" - ")[0]
@@ -201,7 +201,8 @@ def detail_playlist(request):
             UP.total_durasi,
             UP.tanggal_dibuat,
             UP.deskripsi,
-            UP.id_playlist
+            UP.id_playlist,
+            UP.id_user_playlist
         FROM 
             USER_PLAYLIST UP
         JOIN 
@@ -274,3 +275,257 @@ def kelola_playlist_terisi(request):
     cursor.close()
     conn.close()
     return render(request, "kelola_playlist_terisi.html", context)
+
+def song_detail(request):
+    konten_id = request.GET.get('konten_id', None)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+        SELECT 
+            K.judul,
+            G.genre,
+            A.nama,
+            AW.nama,
+            K.durasi,
+            K.tanggal_rilis,
+            K.tahun,
+            S.total_play,
+            S.total_download,
+            AL.judul
+        FROM 
+            KONTEN K
+        JOIN 
+            SONG S ON K.id = S.id_konten
+        JOIN 
+            ALBUM AL ON S.id_album = AL.id
+        JOIN 
+            ARTIST ART ON S.id_artist = ART.id
+        JOIN 
+            AKUN A ON ART.email_akun = A.email
+        JOIN 
+            SONGWRITER_WRITE_SONG SWS ON K.id = SWS.id_song
+        JOIN 
+            SONGWRITER SW ON SWS.id_songwriter = SW.id
+        JOIN 
+            AKUN AS AW ON SW.email_akun = AW.email
+        JOIN 
+            GENRE G ON K.id = G.id_konten
+        WHERE 
+            K.id = %s;
+    """
+
+    cursor.execute(query, (konten_id,))
+    song_detail = cursor.fetchall()
+    context = {
+        'detail_song': song_detail,
+        'konten_id' : konten_id,
+    }
+
+    cursor.close()
+    conn.close()
+
+    return render(request, 'song_detail.html', context)
+
+def add_to_playlist(request):
+    user = context_user.context_user_getter(request)
+    konten_id = request.GET.get('konten_id', None)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query_check_email = """
+        SELECT 
+            email_pembuat
+        FROM 
+            USER_PLAYLIST
+        WHERE 
+            email_pembuat = %s;
+    """
+    cursor.execute(query_check_email, (user['email'],))
+    email_check = cursor.fetchone()
+
+    if not email_check:
+        # Jika email tidak ditemukan, redirect ke halaman add_to_playlist
+        cursor.close()
+        conn.close()
+        return redirect('add_to_playlist')
+
+    query_lagu_artist = """
+        SELECT 
+            KONTEN.judul,
+            AKUN.nama
+        FROM 
+            KONTEN
+        JOIN 
+            SONG ON KONTEN.id = SONG.id_konten
+        JOIN 
+            ARTIST ON SONG.id_artist = ARTIST.id
+        JOIN 
+            AKUN ON ARTIST.email_akun = AKUN.email
+        WHERE 
+            KONTEN.id = %s;
+    """
+    cursor.execute(query_lagu_artist, (konten_id,))
+    lagu_artist = cursor.fetchall()
+
+    query_user_playlist = """
+        SELECT 
+            USER_PLAYLIST.judul,
+            USER_PLAYLIST.id_playlist
+        FROM 
+            USER_PLAYLIST
+        WHERE 
+            USER_PLAYLIST.email_pembuat = %s;
+    """
+    cursor.execute(query_user_playlist, (user['email'],))
+    user_playlist = cursor.fetchall()
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+    context = {
+        'lagu_artist': lagu_artist,
+        'user_playlist': user_playlist,
+        'konten_id': konten_id
+    }
+
+    return render(request, 'add_to_playlist.html', context)
+
+@csrf_exempt
+def insert_to_playlist(request):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        user_playlist =  request.POST.get('user_playlist')
+        konten_id = request.POST.get('konten_id')
+
+        query_insert = """
+            INSERT INTO PLAYLIST_SONG (id_song, id_playlist)
+            VALUES (%s, %s);
+        """
+
+        cursor.execute(query_insert, [konten_id, user_playlist])
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return HttpResponse(b"ADD LAGU KE PLAYLIST", status=201)
+    
+    return HttpResponseNotFound()
+
+def download(request):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    konten_id = request.GET.get('konten_id', None)
+    user = context_user.context_user_getter(request)
+
+    query_insert = """
+        INSERT INTO DOWNLOADED_SONG (id_song, email_downloader)
+        VALUES (%s, %s);
+    """
+
+    cursor.execute(query_insert, (konten_id, user['email'],))
+
+    query_judul = """
+        SELECT 
+            KONTEN.judul
+        FROM
+            KONTEN
+        WHERE
+            KONTEN.id = %s;
+    """
+    cursor.execute(query_judul, (konten_id,))
+    judul = cursor.fetchall()
+
+    context = {
+        'judul' : judul
+    }
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return render(request, 'download.html', context)
+
+def shuffle(request):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    user_playlist_id = request.GET.get('user_playlist_id', None)
+    user = context_user.context_user_getter(request)
+    now = datetime.now()
+    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    query_select_email = """
+        SELECT
+            email_pembuat
+        FROM
+            USER_PLAYLIST
+        WHERE
+            id_user_playlist = %s;
+    """
+    cursor.execute(query_select_email, (user_playlist_id,))
+    email_pembuat = cursor.fetchone()[0]
+
+    query_insert_playlist = """
+        INSERT INTO AKUN_PLAY_USER_PLAYLIST (email_pemain, id_user_playlist, email_pembuat, waktu)
+        VALUES (%s, %s, %s, %s);
+    """
+    cursor.execute(query_insert_playlist, (user['email'], user_playlist_id, email_pembuat, timestamp))
+
+    query_select_lagu ="""
+    SELECT
+        PLAYLIST_SONG.id_song
+    FROM
+        PLAYLIST_SONG
+    JOIN
+        USER_PLAYLIST ON USER_PLAYLIST.id_playlist = PLAYLIST_SONG.id_playlist
+    WHERE
+        USER_PLAYLIST.id_user_playlist = %s;
+    """
+    cursor.execute(query_select_lagu, (user_playlist_id,))
+    play_lagu = cursor.fetchall()
+
+    query_insert_song = """
+        INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
+        VALUES (%s, %s, %s)
+    """
+
+    for lagu in play_lagu:
+        id_song = lagu[0]
+
+        cursor.execute(query_insert_song, (user['email'], id_song, timestamp))
+
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    previous_url = request.META.get('HTTP_REFERER', '/')
+    return redirect(previous_url)
+
+def play_song(request):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    konten_id = request.GET.get('konten_id', None)
+    user = context_user.context_user_getter(request)
+    now = datetime.now()
+    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    query_insert_song = """
+        INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
+        VALUES (%s, %s, %s)
+    """
+
+    cursor.execute(query_insert_song, (user['email'], konten_id, timestamp))
+
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    previous_url = request.META.get('HTTP_REFERER', '/')
+    return redirect(previous_url)
+    
