@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+import psycopg2
 from main.connect import get_db_connection
 from django.views.decorators.http import require_http_methods
 from utils import context_user
@@ -38,16 +40,47 @@ def add_subscription(request):
 @require_http_methods(['GET', 'POST'])
 def pay_subscription(request):
     if request.method == 'POST':
-        id = uuid
+        user = context_user.context_user_getter(request)
+        trans_id = uuid.uuid4()
         jenis_paket = request.POST['jenis_paket']
         harga = request.POST['harga_paket']
         metode_pembayaran = request.POST['payment']
+        interval = 0
+        harga = 0
+        if jenis_paket == '1 bulan':
+            interval = '30 days'; harga = 50000
+        elif jenis_paket == '3 bulan':
+            interval = '3 months'; harga = 135000
+        elif jenis_paket == '6 bulan':
+            interval = '6 months'; harga = 240000
+        else:
+            interval = '1 years'; harga = 420000
         
         print(jenis_paket)
         print(harga)
         print(metode_pembayaran)
         
-        return redirect('main:show_dashboard')
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            cursor.execute(f"INSERT INTO TRANSACTION VALUES ('{trans_id}', '{jenis_paket}', '{user['email']}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '{interval}', '{metode_pembayaran}', {harga})")
+            connection.commit()
+            cursor.close()
+            connection.close()
+            
+            return redirect('main:show_dashboard')
+        
+        except psycopg2.Error as e:
+            if e.pgcode == 'P0001':  # Exception code for our custom exception
+                print("Hello")
+                messages.error(request, str(e))
+                return redirect('main:show_dashboard')
+            else:
+                print(e)
+                return HttpResponse("Error occurred while connecting to the database")
+            
+            
+        
     
     else:
         package = request.GET.get('package')
