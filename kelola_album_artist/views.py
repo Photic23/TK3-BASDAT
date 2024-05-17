@@ -9,7 +9,7 @@ from utils import context_user
 from django.views.decorators.csrf import csrf_exempt
 import json
 import uuid
-
+from django.urls import reverse
 # Create your views here.
 
 def show_create_album(request):
@@ -109,7 +109,7 @@ def delete_album(request, albumID):
 
     return redirect('kelola-album-artist:show_artist')
 
-def delete_song(request, kontenID):
+def delete_song(request, kontenID, albumID):
     user = context_user.context_user_getter(request)
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -119,7 +119,10 @@ def delete_song(request, kontenID):
     cursor.close()
     conn.close()
 
-    return redirect('kelola-album-artist:show_lagu')
+
+    url = reverse('kelola-album-artist:show_lagu', kwargs={'albumID': albumID})
+
+    return redirect(url)
 
 def show_create_lagu(request):
     user = context_user.context_user_getter(request)
@@ -240,8 +243,8 @@ def show_list_album(request):
     conn.close()
     return render(request, "list_album.html", context)
 
-def show_list_lagu(request):
-    album_id = request.GET.get('album_title', None)
+def show_list_lagu(request, albumID):
+    album_id = albumID
     user = context_user.context_user_getter(request)
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -259,6 +262,7 @@ def show_list_lagu(request):
         'judul_album': album_name,
         'song_query': songs,
         'user': user,
+        'album_id': album_id,
     }
 
     return render(request, "list_lagu.html", context)
