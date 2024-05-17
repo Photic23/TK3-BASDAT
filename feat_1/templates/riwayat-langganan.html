@@ -22,7 +22,7 @@
                     </tr>
                 </thead>
                 <tbody class="gap-3">
-                    {% for riwayat in data_playlist %}
+                    {% for riwayat in data_langganan %}
                     <tr class="text-center border-b border-white mb-4"> <!-- Add mb-4 class here -->
                         <td class="py-2">{{ riwayat.jenis_paket }}</td>
                         <td>{{ riwayat.timestamp_dimulai }}</td>
@@ -36,7 +36,7 @@
                 </tbody>
             </table>
         </div>
-        <a href={% url 'feat_1:daftar_playlist_page' %}>
+        <a href={% url 'main:show_dashboard' %}>
             <button class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded w-full">
                 Kembali
             </button>
