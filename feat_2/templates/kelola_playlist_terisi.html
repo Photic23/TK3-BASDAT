@@ -111,7 +111,7 @@
     window.location.href = `/playlist/detail_playlist?playlist_id=${encodeURIComponent(playlistID)}`;
     }
     function redirectToTambahPlaylist(){
-      window.location.href = "{% url 'feat_2:tambah_playlist' %}";
+      window.location.href = `/playlist/tambah_playlist`;
     }
     function redirectDelete(playlistID) {
     window.location.href = `/playlist/hapus_playlist?playlist_id=${encodeURIComponent(playlistID)}`;
