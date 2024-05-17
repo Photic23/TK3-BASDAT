@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
@@ -193,6 +194,10 @@ def show_dashboard(request):
         }
     
     return render(request, "dashboard.html", context)
+
+def logout(request):
+    response = HttpResponseRedirect(reverse('main:login'))
+    return response
 
 def show_register_label(request):
     context = {
