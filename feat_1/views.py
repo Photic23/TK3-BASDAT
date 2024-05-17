@@ -1,8 +1,11 @@
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+import psycopg2
 from main.connect import get_db_connection
 from django.views.decorators.http import require_http_methods
 from utils import context_user
+import uuid
 
 # Create your views here.
 
@@ -10,12 +13,10 @@ def daftar_playlist_page(request):
     user = context_user.context_user_getter(request)
     email = user['email']
     connection = get_db_connection()
-    print(email)
 
     cursor = connection.cursor()
     cursor.execute(f"SELECT * FROM AKUN_PLAY_USER_PLAYLIST WHERE email_pemain = '{email}'")
     playlist_data = cursor.fetchall()
-    print(playlist_data)
     context = {
         'playlist_data': playlist_data,
         'user_name': user['nama']
@@ -39,15 +40,40 @@ def add_subscription(request):
 @require_http_methods(['GET', 'POST'])
 def pay_subscription(request):
     if request.method == 'POST':
+        user = context_user.context_user_getter(request)
+        trans_id = uuid.uuid4()
         jenis_paket = request.POST['jenis_paket']
         harga = request.POST['harga_paket']
         metode_pembayaran = request.POST['payment']
+        interval = 0
+        harga = 0
+        if jenis_paket == '1 bulan':
+            interval = '30 days'; harga = 50000
+        elif jenis_paket == '3 bulan':
+            interval = '3 months'; harga = 135000
+        elif jenis_paket == '6 bulan':
+            interval = '6 months'; harga = 240000
+        else:
+            interval = '1 years'; harga = 420000
         
-        print(jenis_paket)
-        print(harga)
-        print(metode_pembayaran)
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            cursor.execute(f"INSERT INTO TRANSACTION VALUES ('{trans_id}', '{jenis_paket}', '{user['email']}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL '{interval}', '{metode_pembayaran}', {harga})")
+            connection.commit()
+            cursor.close()
+            connection.close()
+            
+            return redirect('main:show_dashboard')
         
-        return redirect('main:show_dashboard')
+        except psycopg2.Error as e:
+            if e.pgcode == 'P0001':  # Exception code for our custom exception
+                print("Hello")
+                messages.error(request, str(e))
+                return redirect('main:show_dashboard')
+            else:
+                print(e)
+                return HttpResponse("Error occurred while connecting to the database")
     
     else:
         package = request.GET.get('package')
@@ -55,7 +81,6 @@ def pay_subscription(request):
             
             connection = get_db_connection()
             cursor = connection.cursor()
-            print(package)
             cursor.execute(f"SELECT jenis, harga FROM PAKET WHERE jenis = '{package}'")
             paket = cursor.fetchone()
             cursor.close()
@@ -74,29 +99,89 @@ def pay_subscription(request):
         else:
             return HttpResponse("No package selected.")
 
+@require_http_methods(['GET'])
 def subscription_history(request):
+    user = context_user.context_user_getter(request)
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT jenis_paket, timestamp_dimulai, timestamp_berakhir, metode_bayar, nominal FROM TRANSACTION WHERE email = '{user['email']}'")
+    data_langganan = cursor.fetchall()
     context = {
-        'username': "Scarletra",
+        'data_langganan': [{
+            'jenis_paket': row[0],
+            'timestamp_dimulai': row[1],
+            'timestamp_berakhir': row[2],
+            'metode_bayar': row[3],
+            'nominal': row[4],
+            } for row in data_langganan],
+        'user': user,
     }
     return render(request, 'riwayat-langganan.html', context)
 
-def test_searchbar(request):
+def search(request):
+    user = context_user.context_user_getter(request)
+    query = request.GET.get('query')
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT judul, AKUN.nama, k.id FROM KONTEN k JOIN SONG ON k.id = SONG.id_konten JOIN ARTIST ON SONG.id_artist = ARTIST.id JOIN AKUN ON AKUN.email = ARTIST.email_akun WHERE k.judul ILIKE '%{query}%';")
+    list_lagu = cursor.fetchall()
+    cursor.execute(f"SELECT judul, AKUN.nama, k.id FROM KONTEN k JOIN PODCAST ON k.id = PODCAST.id_konten JOIN PODCASTER ON PODCAST.email_podcaster = PODCASTER.email JOIN AKUN ON AKUN.email = PODCASTER.email WHERE k.judul ILIKE '%{query}%';")
+    list_podcast = cursor.fetchall()
+    cursor.execute(f"SELECT judul, AKUN.nama, id_user_playlist FROM USER_PLAYLIST p JOIN AKUN ON AKUN.email = p.email_pembuat WHERE p.judul ILIKE '%{query}%';")
+    list_playlist = cursor.fetchall()
+
     context = {
-        'username': "Scarletra",
+        'query': query,
+        'song_list': [{
+                'judul': row[0],
+                'artist_name': row[1],
+                'id': row[2]
+                } for row in list_lagu],
+        'podcast_list': [{
+                'judul': row[0],
+                'podcaster_name': row[1],
+                'id': row[2]
+                } for row in list_podcast],
+        'playlist_list': [{
+                'judul': row[0],
+                'user_name': row[1],
+                'id': row[2]
+                } for row in list_playlist],
+        'user': user
     }
-    return render(request, 'search-bar-code.html', context)
+    return render(request, 'hasil-pencarian.html', context)
+
+def delete_from_downloaded(request, id):
+    user = context_user.context_user_getter(request)
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(f"UPDATE SONG SET total_download = total_download - 1 WHERE id_konten = '{id}';")
+    connection.commit()
+    cursor.execute(f"DELETE FROM DOWNLOADED_SONG WHERE id_song = '{id}' AND email_downloader = '{user['email']}';")
+    connection.commit()
+    cursor.close()
+    connection.close()
+    
+    return redirect('feat_1:downloaded_song')
 
 def downloaded_song(request):
     user = context_user.context_user_getter(request)
     if user['premium_status'] == "Premium":
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM DOWNLOADED_SONG WHERE email_downloader = '{user['email']}'")
+        cursor.execute(f"SELECT KONTEN.judul AS song_title, AKUN.nama AS artist_name, d.id_song as id FROM DOWNLOADED_SONG d JOIN SONG ON d.id_song = SONG.id_konten JOIN KONTEN ON SONG.id_konten = KONTEN.id JOIN ARTIST ON SONG.id_artist = ARTIST.id JOIN AKUN on ARTIST.email_akun = AKUN.email WHERE d.email_downloader = '{user['email']}';")
         downloaded_song = cursor.fetchall()
-        print(downloaded_song)
+        context = {
+            'song_list': [{
+                'song_title': row[0],
+                'artist_name': row[1],
+                'id': row[2]
+                } for row in downloaded_song],
+            'user': user,
+        }
         cursor.close()
         connection.close()
-        return render(request, 'downloaded-song.html', user)
+        return render(request, 'downloaded-song.html', context)
     else:
         return redirect('main:show_dashboard')
 

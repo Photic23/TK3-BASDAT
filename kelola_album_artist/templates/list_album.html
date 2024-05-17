@@ -31,6 +31,7 @@
                   Create Album
                   </span>
               </button>
+              {% if album_query %}
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
@@ -66,23 +67,30 @@
                             {{ album.2 }} <!-- duration data -->
                         </td>
                         <td class="px-6 py-4">
-                            <button type="list_song" onclick="redirectToSongList('{{ album.4 }}')" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
-                                <img src="/static/icon_list.png" alt="List Icon" class="w-5 h-5 text-white me-2">
-                                Song list
-                            </button>
-                            <button type="add_song" onclick="window.location.href='/kelola-album-artist/create-lagu'" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
+                            <a href="{% url 'kelola-album-artist:show_lagu' albumID=album.4 %}">
+                                <button type="list_song" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
+                                    <img src="/static/icon_list.png" alt="List Icon" class="w-5 h-5 text-white me-2">
+                                    Song list
+                                </button>
+                            </a>
+                            <button type="add_song" onclick="redirectToCreateSong('{{ album.4 }}')" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
                                 <img src="/static/icon_plus.png" alt="List Icon" class="w-5 h-5 text-white me-2">
                                 Add song
                             </button>
-                            <button type="delete_album" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
-                                <img src="/static/icon_delete.png" alt="List Icon" class="w-5 h-5 text-white me-2">
-                                Delete album
-                            </button> 
+                            <a href="{% url 'kelola-album-artist:delete_album' albumID=album.4 %}">
+                                <button type="button" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
+                                    <img src="/static/icon_delete.png" alt="List Icon" class="w-5 h-5 text-white me-2">
+                                    Delete album
+                                </button>
+                            </a>                            
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>                
+                {% else %}
             </table>
+            <p class="centered-paragraph"> Anda tidak punya album</p>
+            {% endif %}
         </div><br>
         <button onclick="goBack()" class="blockButton relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
             <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
@@ -99,8 +107,8 @@
     function goBack() {
       window.history.back();
     }
-    function redirectToSongList(albumTitle) {
-    window.location.href = `/kelola-album-artist/list-lagu?album_title=${encodeURIComponent(albumTitle)}`;
+    function redirectToCreateSong(albumTitle){
+        window.location.href=`/kelola-album-artist/create-lagu?album_title=${encodeURIComponent(albumTitle)}`;
     }
     function redirectToCreateAlbum(){
       window.location.href = "{% url 'kelola-album-artist:show_album' %}";

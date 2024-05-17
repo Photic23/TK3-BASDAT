@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Your Page Title</title>
+    <style>
+    .container {
+        width: 80%;
+        margin: 50px auto 0;
+    }
+
+    .blockButton {
+        display: block;
+        width: 100%; 
+    }
+
+    /* Menambahkan sedikit padding untuk elemen tabel */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+        padding: 8px;
+    }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+{% endblock meta %}
+{% block content %}
+<body>
+
+    <div class="container">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+             <!-- Detail Playlist -->
+             {% if detail_playlist %}
+            <div id="playlist-detail" class="p-5 mb-5 bg-white shadow-md sm:rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Detail Playlist</h2>
+                <p class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><strong>Judul: {{detail_playlist.0.0}}</strong> <span id="judul"></span></p> 
+                <p class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><strong>Pembuat: {{detail_playlist.0.1}}</strong> <span id="pembuat"></span></p>
+                <p class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><strong>Jumlah Lagu: {{detail_playlist.0.2}}</strong> <span id="jumlah_lagu"></span></p>
+                <p class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><strong>Total Durasi: {{detail_playlist.0.3}}</strong> <span id="total_durasi"></span></p>
+                <p class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><strong>Tanggal Dibuat: {{detail_playlist.0.4}}</strong> <span id="tanggal_dibuat"></span></p>
+                <p class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><strong>Deskripsi: {{detail_playlist.0.5}}</strong> <span id="deskripsi"></span></p>
+            </div>
+            {% else %}
+            <p>Detail playlist tidak ditemukan.</p>
+            {% endif %}
+            <button onclick="redirectToShuffle('{{ detail_playlist.0.7 }}')" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    Shuffle
+                </span>
+            </button>
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800" style="text-align: center;">
+                    User Playlist
+                </caption>
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Judul Lagu
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Oleh
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Durasi
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if not songs_in_playlist %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td colspan="4" class="px-6 py-4 font-medium text-gray-900 text-center whitespace-nowrap dark:text-white">
+                            Anda belum memiliki lagu di Playlist ini
+                        </td>
+                    </tr>
+                    {% else %}
+                    {% for songs in songs_in_playlist %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ songs.0 }}
+                        </th>
+                        <td class="px-6 py-4">
+                            {{ songs.1 }} 
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ songs.2 }} 
+                        </td>
+                        <td class="px-6 py-4">
+                            <button onclick="redirectToSee('{{ songs.3 }}')" type="list_song" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
+                                <class="w-5 h-5 text-white me-2">
+                                Lihat
+                            </button>
+                            <button onclick="redirectToPlay('{{ songs.3 }}')" type="add_song" onclick="" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
+                                <class="w-5 h-5 text-white me-2">
+                                Play
+                            </button>
+                            <button onclick="redirectDelete('{{ songs.3 }}', '{{ detail_playlist.0.6 }}')" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">
+                                Hapus
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>                
+            </table>
+            <button onclick="redirectToAdd('{{ detail_playlist.0.6 }}')" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                Tambah Lagu
+                </span>
+            </button>
+        </div><br>
+        <!-- <button onclick="goBack()" class="blockButton relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+            Kembali
+            </span>
+        </button> -->
+        
+    </div>
+
+</body>
+
+<script>
+    function redirectToAdd(playlistID) {
+        window.location.href = `/playlist/add_lagu_playlist?playlist_id=${encodeURIComponent(playlistID)}`;
+    }
+    function redirectDelete(kontenID, playlistID) {
+        window.location.href = `/playlist/hapus_lagu?konten_id=${encodeURIComponent(kontenID)}&playlist_id=${encodeURIComponent(playlistID)}`;
+    }
+    function redirectToSee(kontenID) {
+        window.location.href = `/playlist/song_detail?konten_id=${encodeURIComponent(kontenID)}`;
+    }
+    function redirectToShuffle(userplaylistID) {
+        window.location.href = `/playlist/shuffle?user_playlist_id=${encodeURIComponent(userplaylistID)}`;
+    }
+    function redirectToPlay(kontenID) {
+        window.location.href = `/playlist/play_song?konten_id=${encodeURIComponent(kontenID)}`;
+    }
+
+</script>
+{% endblock content %}
+</html>

@@ -62,7 +62,8 @@
           <img src="/static/icon_artist.png" alt="Artist Icon" class="w-4 h-4 text-gray-500 dark:text-gray-400">
       </span>
       {% if user.roles in "Artist" %}
-      <input type="text" id="artist-name" value="{{user_id}}" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="{{ user.nama }}" disabled>
+      <input type="hidden" id="artist-name" name="artist_id" value="{{ user_id }}">
+      <input type="text" id="artist-show" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="{{ user.nama }}" disabled>
       {% else %}
       <select id="artist-name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         {% for artist in artists_name %}

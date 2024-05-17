@@ -13,6 +13,13 @@
         display: block;
         width: 100%; 
     }
+
+    .centered-paragraph {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1.25em;
+        color: #555;
+    }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
@@ -23,6 +30,7 @@
 
     <div class="container">
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800" style="text-align: center;">
                     LIST ROYALTI
@@ -30,6 +38,7 @@
                 <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800" style="text-align: center;">
                     (HANYA MENUNJUKKAN LAGU YANG MEMILIKI NILAI ROYALTI)
                 </caption>
+                {% if royalti_query %}
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
@@ -69,8 +78,12 @@
                         </td>
                     </tr>
                     {% endfor %}
-                    </tbody>
+                </tbody>
+                {% else %}
             </table>
+            <p class="centered-paragraph"> Anda tidak punya royalti yang memiliki nilai</p>
+            
+            {% endif %}
         </div><br>
         <button onclick="goBack()" class="blockButton relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
             <span class="relative px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
