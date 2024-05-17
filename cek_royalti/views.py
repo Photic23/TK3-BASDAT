@@ -11,16 +11,46 @@ def show_main(request):
     user = context_user.context_user_getter(request)
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
-                        s.total_play * phc.rate_royalti AS royalties 
-                    FROM KONTEN k
-                    JOIN SONG s ON s.id_konten = k.id
-                    JOIN ALBUM a ON s.id_album = a.id
-                    JOIN ARTIST r ON s.id_artist = r.id
-                    JOIN PEMILIK_HAK_CIPTA phc ON r.id = s.id_artist
-                    JOIN ROYALTI rt ON rt.id_pemilik_hak_cipta = phc.id AND rt.id_song = s.id_konten
-                    WHERE r.email_akun = %s""", (user['email'],))
-    royalti = cursor.fetchall()
+    royalti = ""
+    if user['roles'] == "Artist":
+        cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
+                            s.total_play * phc.rate_royalti AS royalties 
+                        FROM KONTEN k
+                        JOIN SONG s ON s.id_konten = k.id
+                        JOIN ALBUM a ON s.id_album = a.id
+                        JOIN ARTIST r ON s.id_artist = r.id
+                        JOIN PEMILIK_HAK_CIPTA phc ON r.id = s.id_artist
+                        JOIN ROYALTI rt ON rt.id_pemilik_hak_cipta = phc.id AND rt.id_song = s.id_konten
+                        WHERE r.email_akun = %s""", (user['email'],))
+        royalti = cursor.fetchall()
+    elif user['roles'] == "Songwriter":
+        cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
+                            s.total_play * phc.rate_royalti AS royalties 
+                        FROM KONTEN k
+                        JOIN SONG s ON s.id_konten = k.id
+                        JOIN ALBUM a ON s.id_album = a.id
+                        JOIN SONGWRITER_WRITE_SONG r ON s.id_konten = r.id_song
+                        JOIN SONGWRITER sr ON sr.id = r.id_songwriter
+                        JOIN PEMILIK_HAK_CIPTA phc ON phc.id = sr.id_pemilik_hak_cipta
+                        JOIN ROYALTI rt ON rt.id_pemilik_hak_cipta = phc.id AND rt.id_song = s.id_konten
+                        WHERE sr.email_akun = %s""", (user['email'],))
+        royalti = cursor.fetchall()
+    else:
+        cursor.execute("""SELECT k.judul, a.judul, s.total_play, s.total_download, 
+                            s.total_play * phc.rate_royalti AS royalties 
+                        FROM KONTEN k
+                        JOIN SONG s ON s.id_konten = k.id
+                        JOIN ALBUM a ON s.id_album = a.id
+                        JOIN ARTIST r ON s.id_artist = r.id
+                        JOIN SONGWRITER_WRITE_SONG r ON s.id_konten = r.id_song
+                        JOIN SONGWRITER sr ON sr.id = r.id_songwriter
+                        JOIN PEMILIK_HAK_CIPTA phc ON phc.id = sr.id_pemilik_hak_cipta
+                        JOIN ROYALTI rt ON rt.id_pemilik_hak_cipta = phc.id AND rt.id_song = s.id_konten
+                        WHERE sr.email_akun = %s""", (user['email'],))
+        royalti = cursor.fetchall()
+
+
+
     cursor.close()
     conn.close()
 
