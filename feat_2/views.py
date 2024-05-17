@@ -11,6 +11,8 @@ import json
 import uuid
 from psycopg2.errors import UndefinedColumn
 from django.db import DatabaseError
+from django.urls import reverse
+from psycopg2.errors import UniqueViolation
 
 def tambah_playlist(request):
     return render(request, 'tambah_playlist.html')
@@ -27,7 +29,7 @@ def hapus_playlist(request):
 
     cursor.close()
     conn.close()
-    return HttpResponse(b"DELETED", status=201)
+    return redirect(reverse('feat_2:kelola_playlist_terisi'))
 
 def hapus_lagu(request):
     konten_id = request.GET.get('konten_id', None)
@@ -49,7 +51,8 @@ def hapus_lagu(request):
 
     cursor.close()
     conn.close()
-    return HttpResponse(b"DELETED", status=201)
+    previous_url = request.META.get('HTTP_REFERER', '/')
+    return redirect(previous_url)
 
 def add_lagu_playlist(request):
     playlist_id = request.GET.get('playlist_id', None)
@@ -96,22 +99,23 @@ def tambah_lagu(request):
         cursor.execute("SELECT id FROM KONTEN WHERE judul = %s", [judul_lagu])
         id_konten = cursor.fetchone()[0]
 
-        cursor.execute("INSERT INTO PLAYLIST_SONG (id_playlist, id_song) VALUES (%s, %s)", [playlist_id, id_konten])
-        cursor.execute("UPDATE USER_PLAYLIST SET jumlah_lagu = jumlah_lagu + 1 WHERE id_playlist = %s", [playlist_id])
-        cursor.execute("""
-            UPDATE USER_PLAYLIST
-            SET total_durasi = USER_PLAYLIST.total_durasi + KONTEN.durasi
-            FROM KONTEN
-            WHERE KONTEN.id = %s AND USER_PLAYLIST.id_playlist = %s
-        """, [id_konten, playlist_id])
-        
-        conn.commit()
-        cursor.close()
-        conn.close()
+        context = {
+            'playlist_id' : playlist_id,
+            'judul_lagu' : judul_lagu
+        }
 
-        return HttpResponse(b"ADD LAGU", status=201)
+        try:
+            cursor.execute("INSERT INTO PLAYLIST_SONG (id_playlist, id_song) VALUES (%s, %s)", [playlist_id, id_konten])
+        
+            conn.commit()
+            cursor.close()
+            conn.close()
+        except UniqueViolation:
+            return render(request, 'gagal_add_to_playlist.html', context)
+
+        return redirect(f"{reverse('feat_2:detail_playlist')}?playlist_id={playlist_id}")
     
-    return HttpResponseNotFound()
+    return redirect(f"{reverse('feat_2:detail_playlist')}?playlist_id={playlist_id}")
 
 def ubah_playlist(request):
     playlist_id = request.GET.get('playlist_id', None)
@@ -142,9 +146,9 @@ def update_playlist(request):
         cursor.close()
         conn.close()
 
-        return HttpResponse(b"UPDATE", status=201)
+        return redirect(reverse('feat_2:kelola_playlist_terisi'))
     
-    return HttpResponseNotFound()
+    return redirect(reverse('feat_2:kelola_playlist_terisi'))
 
     
 
@@ -183,9 +187,7 @@ def form_tambah_playlist(request):
         cursor.close()
         conn.close()
 
-        return HttpResponse(b"CREATED", status=201)
-    
-    return HttpResponseNotFound()
+        return redirect(reverse('feat_2:kelola_playlist_terisi'))
 
 def detail_playlist(request):
     playlist_id = request.GET.get('playlist_id', None)
@@ -276,10 +278,14 @@ def kelola_playlist_terisi(request):
     conn.close()
     return render(request, "kelola_playlist_terisi.html", context)
 
+from django.shortcuts import render, redirect
+
 def song_detail(request):
     konten_id = request.GET.get('konten_id', None)
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    user = context_user.context_user_getter(request)
 
     query = """
         SELECT 
@@ -320,6 +326,7 @@ def song_detail(request):
     context = {
         'detail_song': song_detail,
         'konten_id' : konten_id,
+        'is_premium': user['premium_status'] == 'Premium',  # Mengatur status premium pengguna
     }
 
     cursor.close()
@@ -401,33 +408,58 @@ def insert_to_playlist(request):
         user_playlist =  request.POST.get('user_playlist')
         konten_id = request.POST.get('konten_id')
 
-        query_insert = """
-            INSERT INTO PLAYLIST_SONG (id_song, id_playlist)
-            VALUES (%s, %s);
+        query_judul = """
+            SELECT 
+                KONTEN.judul
+            FROM
+                KONTEN
+            WHERE
+                KONTEN.id = %s;
         """
+        cursor.execute(query_judul, (konten_id,))
+        judul_lagu = cursor.fetchall()
 
-        cursor.execute(query_insert, [konten_id, user_playlist])
+        query_playlist = """
+            SELECT 
+                USER_PLAYLIST.judul
+            FROM
+                USER_PLAYLIST
+            WHERE
+                USER_PLAYLIST.id_playlist = %s;
+        """
+        cursor.execute(query_playlist, (user_playlist,))
+        judul_playlist = cursor.fetchall()
 
-        conn.commit()
-        cursor.close()
-        conn.close()
+        context = {
+            'judul_lagu' : judul_lagu,
+            'judul_playlist' : judul_playlist,
+            'playlist_id' : user_playlist,
+            'konten_id' : konten_id,
+        }
 
-        return HttpResponse(b"ADD LAGU KE PLAYLIST", status=201)
-    
-    return HttpResponseNotFound()
+        try:
+            query_insert = """
+                INSERT INTO PLAYLIST_SONG (id_song, id_playlist)
+                VALUES (%s, %s);
+            """
+
+            cursor.execute(query_insert, [konten_id, user_playlist])
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return render(request, 'berhasil_add.html', context)
+        
+        except UniqueViolation:
+            return render(request, 'gagal_add.html', context)
+    return render(request, 'berhasil_add.html')
 
 def download(request):
     conn = get_db_connection()
     cursor = conn.cursor()
     konten_id = request.GET.get('konten_id', None)
     user = context_user.context_user_getter(request)
-
-    query_insert = """
-        INSERT INTO DOWNLOADED_SONG (id_song, email_downloader)
-        VALUES (%s, %s);
-    """
-
-    cursor.execute(query_insert, (konten_id, user['email'],))
 
     query_judul = """
         SELECT 
@@ -441,14 +473,25 @@ def download(request):
     judul = cursor.fetchall()
 
     context = {
-        'judul' : judul
+        'judul' : judul,
+        'konten_id' : konten_id
     }
 
-    conn.commit()
-    cursor.close()
-    conn.close()
 
-    return render(request, 'download.html', context)
+    try:
+        query_insert = """
+            INSERT INTO DOWNLOADED_SONG (id_song, email_downloader)
+            VALUES (%s, %s);
+        """
+        cursor.execute(query_insert, (konten_id, user['email'],))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return render(request, 'download.html', context)
+    except UniqueViolation:
+        return render(request, 'gagal_download.html', context)
 
 def shuffle(request):
     conn = get_db_connection()
@@ -528,4 +571,49 @@ def play_song(request):
 
     previous_url = request.META.get('HTTP_REFERER', '/')
     return redirect(previous_url)
-    
+
+def play(request):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    konten_id = request.GET.get('konten_id', None)
+    user = context_user.context_user_getter(request)
+    now = datetime.now()
+    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    query_insert_song = """
+        INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
+        VALUES (%s, %s, %s)
+    """
+
+    cursor.execute(query_insert_song, (user['email'], konten_id, timestamp))
+
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    previous_url = request.META.get('HTTP_REFERER', '/')
+    return redirect(previous_url)
+
+def play(request):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    konten_id = request.GET.get('konten_id', None)
+    user = context_user.context_user_getter(request)
+    now = datetime.now()
+    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    query_insert_song = """
+        INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
+        VALUES (%s, %s, %s)
+    """
+
+    cursor.execute(query_insert_song, (user['email'], konten_id, timestamp))
+
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    previous_url = request.META.get('HTTP_REFERER', '/')
+    return redirect(previous_url)

@@ -56,7 +56,9 @@
             <br>
             <button id="add-to-playlist-button" class="blockButton bg-blue-500 text-white py-2 px-4 rounded">Add to Playlist</button>
             <br>
+            {% if is_premium %}
             <button id="download" class="blockButton bg-blue-500 text-white py-2 px-4 rounded">Download</button>
+            {% endif %}
             <p id="message" class="text-sm text-gray-500 mt-2"></p>
             {% else %}
             <p>Detail lagu tidak ditemukan.</p>
@@ -75,6 +77,10 @@ function redirectToDownload(kontenID) {
     window.location.href = `/playlist/download?konten_id=${encodeURIComponent(kontenID)}`;
 }
 
+function redirectToPlay(kontenID) {
+    window.location.href = `/playlist/play?konten_id=${encodeURIComponent(kontenID)}`;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('progress-input');
     const playButton = document.getElementById('play-button');
@@ -84,13 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     playButton.addEventListener('click', function() {
         const progress = parseInt(input.value);
-        if (progress > 70) {
-            const timestamp = new Date().toLocaleString();
-            message.textContent = `AKUN_PLAY_SONG entry added with timestamp: ${timestamp}`;
-            // Simulate updating total play count
-            console.log('Total play count updated');
-        } else {
-            message.textContent = 'Progress is not enough to play the song.';
+        if (progress > 70 && progress <= 100) {
+            redirectToPlay('{{ konten_id }}');
         }
     });
 
@@ -104,4 +105,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock content %}
-</html>

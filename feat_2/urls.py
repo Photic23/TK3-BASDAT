@@ -20,5 +20,6 @@ urlpatterns = [
     path('download/', views.download, name='download'),
     path('shuffle/', views.shuffle, name='shuffle'),
     path('play_song/', views.play_song, name='play_song'),
+    path('play/', views.play, name='play'),
 ]
 
