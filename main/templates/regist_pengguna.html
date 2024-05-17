@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Label Registration</title>
+    <title>Account Registration</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -62,10 +62,10 @@
     </style>
 </head>
 <body>
-    <h1>Label Registration</h1>
-    <form action="/main/register_user/submit_register_label/" method="post">
-        {% csrf_token %}
-        <div>
+    <h1>Account Registration</h1>
+    <div>
+        <form action="/main/register_user/submit_register_pengguna/" method="post">
+            {% csrf_token %}
             <label for="email">Email:</label>
             <input type="text" id="email" name="email">
 
@@ -78,12 +78,38 @@
             <label for="name">Name:</label>
             <input type="text" id="name" name="name">
 
-            <label for="contact">Contact:</label>
-            <input type="text" id="contact" name="contact">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <label for="tempat_lahir">Tempat Lahir:</label>
+            <input type="text" id="tempat_lahir" name="tempat_lahir">
+
+            <label for="tanggal_lahir">Tanggal Lahir:</label>
+            <input type="date" id="tanggal_lahir" name="tanggal_lahir">
+
+            <label for="kota_asal">Kota Asal:</label>
+            <input type="text" id="kota_asal" name="kota_asal">
+
+            <label for="role">Role:</label>
+            <div>
+                <input type="checkbox" id="podcaster" name="role" value="podcaster">
+                <label for="podcaster">Podcaster</label>
+            </div>
+            <div>
+                <input type="checkbox" id="artist" name="role" value="artist">
+                <label for="artist">Artist</label>
+            </div>
+            <div>
+                <input type="checkbox" id="writer" name="role" value="writer">
+                <label for="songwriter">Songwriter</label>
+            </div>
 
             <input type="submit" value="Register">
-        </div>
-    </form>
+        </form>
+    </div>
 </body>
 </html>
 
@@ -92,7 +118,7 @@
         const form = document.querySelector('form');
 
         form.addEventListener('submit', function(event) {
-            const inputs = form.querySelectorAll('input[type="text"], input[type="password"]');
+            const inputs = form.querySelectorAll('input[type="text"], input[type="password"], select');
             let isEmpty = false;
 
             inputs.forEach(input => {

@@ -1,11 +1,15 @@
+import random
+import uuid
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from utils import context_user
 import psycopg2
 from main.connect import get_db_connection
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -124,16 +128,10 @@ def login(request):
         return render(request, 'login-form.html')
 
 def show_register_main(request):
-    context = {
-    }
-
-    return render(request, "regist_main.html", context)
+    return render(request, "regist_main.html")
 
 def show_register_pengguna(request):
-    context = {
-    }
-
-    return render(request, "regist.html", context)
+    return render(request, "regist_pengguna.html")
 
 def show_dashboard(request):
     connection = get_db_connection()
@@ -204,5 +202,92 @@ def show_register_label(request):
     }
 
     return render(request, "regist_label.html", context)
+
+@csrf_exempt
+def submit_register_pengguna(request):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirmPassword')
+        name = request.POST.get('name')
+        gender = request.POST.get('gender')
+        tempat_lahir = request.POST.get('tempat_lahir')
+        tanggal_lahir = request.POST.get('tanggal_lahir')
+        kota_asal = request.POST.get('kota_asal')
+        roles = request.POST.getlist('role')
+
+        is_verified = bool(roles)
+
+        gender_value = 0
+        if gender.lower() == "male":
+            gender_value = 1
+
+        query = """
+        INSERT INTO AKUN (email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (email, password, name, gender_value, tempat_lahir, tanggal_lahir, is_verified, kota_asal))
+
+        uuid_pemilik_hak_cipta = str(uuid.uuid4())
+        random_rate = random.randint(100, 5000)
+
+        target_roles = ["artist", "podcaster", "songwriter"]
+
+        if any(role in target_roles for role in roles):
+            cursor.execute("INSERT INTO PEMILIK_HAK_CIPTA (id, rate_royalti) VALUES (%s, %s)", [uuid_pemilik_hak_cipta, random_rate])
+        
+        if 'artist' in roles:
+            uuid_artist = str(uuid.uuid4())
+            cursor.execute("INSERT INTO ARTIST (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", [uuid_artist, email, uuid_pemilik_hak_cipta])
+        elif 'podcaster' in roles:
+            cursor.execute("INSERT INTO PODCASTER (email) VALUES (%s)", [email])
+        elif 'songwriter' in roles:
+            uuid_songwriter = str(uuid.uuid4())
+            cursor.execute("INSERT INTO SONGWRITER (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", [uuid_songwriter, email, uuid_pemilik_hak_cipta])
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    context = {
+    }
+
+    return redirect(reverse('main:index'))
+
+@csrf_exempt
+def submit_register_label(request):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        name = request.POST.get('name')
+        contact = request.POST.get('contact')
+        uuid_label = str(uuid.uuid4())
+        uuid_pemilik_hak_cipta = str(uuid.uuid4())
+        random_rate = random.randint(100, 5000)
+
+        cursor.execute("INSERT INTO PEMILIK_HAK_CIPTA (id, rate_royalti) VALUES (%s, %s)", [uuid_pemilik_hak_cipta, random_rate])
+
+        query = """
+        INSERT INTO LABEL (id, nama, email, password, kontak, id_pemilik_hak_cipta) 
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (uuid_label, name, email, password, contact, uuid_pemilik_hak_cipta))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    context = {
+    }
+
+    return redirect(reverse('main:index'))
+
+
 
     
