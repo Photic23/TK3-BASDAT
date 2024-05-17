@@ -1,6 +1,5 @@
 from django.urls import path
-from main.views import show_register_pengguna, show_register_main, show_register_label
-from main.views import login, index, show_dashboard
+from main.views import *
 
 app_name = 'main'
 
@@ -11,4 +10,6 @@ urlpatterns = [
     path('dashboard', show_dashboard, name='show_dashboard'),
     path('register/', show_register_main, name='show_register_main'),
     path('register-label/', show_register_label, name='show_register_label'),
+    path('register_user/submit_register_pengguna/', submit_register_pengguna, name='submit_register_pengguna'),
+    path('register_user/submit_register_label/', submit_register_label, name='submit_register_label'),
 ]

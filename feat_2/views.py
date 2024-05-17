@@ -15,7 +15,11 @@ from django.urls import reverse
 from psycopg2.errors import UniqueViolation
 
 def tambah_playlist(request):
-    return render(request, 'tambah_playlist.html')
+    user = context_user.context_user_getter(request)
+    context = {
+        'user' : user
+    }
+    return render(request, "tambah_playlist.html", context)
 
 def hapus_playlist(request):
     playlist_id = request.GET.get('playlist_id', None)
@@ -40,10 +44,8 @@ def hapus_lagu(request):
 
     # Lakukan operasi penghapusan data
     cursor.execute("DELETE FROM PLAYLIST_SONG WHERE id_song = %s", (konten_id,))
-    cursor.execute("UPDATE USER_PLAYLIST SET jumlah_lagu = jumlah_lagu - 1 WHERE id_playlist = %s", [playlist_id])
     cursor.execute("""
             UPDATE USER_PLAYLIST
-            SET total_durasi = USER_PLAYLIST.total_durasi - KONTEN.durasi
             FROM KONTEN
             WHERE KONTEN.id = %s AND USER_PLAYLIST.id_playlist = %s
         """, [konten_id, playlist_id])
@@ -56,6 +58,7 @@ def hapus_lagu(request):
 
 def add_lagu_playlist(request):
     playlist_id = request.GET.get('playlist_id', None)
+    user = context_user.context_user_getter(request)
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -81,7 +84,8 @@ def add_lagu_playlist(request):
 
     context = {
         'songs': song_artist_list,
-        'playlist_id': playlist_id
+        'playlist_id': playlist_id,
+        'user': user
     }
 
     return render(request, "add_lagu_playlist.html", context)
@@ -118,10 +122,12 @@ def tambah_lagu(request):
     return redirect(f"{reverse('feat_2:detail_playlist')}?playlist_id={playlist_id}")
 
 def ubah_playlist(request):
+    user = context_user.context_user_getter(request)
     playlist_id = request.GET.get('playlist_id', None)
 
     context = {
-        'playlist_id': playlist_id
+        'playlist_id': playlist_id,
+        'user': user
     }
 
     return render(request, 'ubah_playlist.html', context)
@@ -190,6 +196,7 @@ def form_tambah_playlist(request):
         return redirect(reverse('feat_2:kelola_playlist_terisi'))
 
 def detail_playlist(request):
+    user = context_user.context_user_getter(request)
     playlist_id = request.GET.get('playlist_id', None)
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -240,6 +247,7 @@ def detail_playlist(request):
     context = {
         'detail_playlist': detail_playlist,
         'songs_in_playlist': songs_in_playlist,
+        'user' : user
     }
 
     cursor.close()
@@ -271,7 +279,7 @@ def kelola_playlist_terisi(request):
 
     context = {
         'playlist_query': playlist,
-        'user':user
+        'user': user
     }
 
     cursor.close()
@@ -326,7 +334,8 @@ def song_detail(request):
     context = {
         'detail_song': song_detail,
         'konten_id' : konten_id,
-        'is_premium': user['premium_status'] == 'Premium',  # Mengatur status premium pengguna
+        'is_premium': user['premium_status'] == 'Premium',
+        'user': user
     }
 
     cursor.close()
@@ -394,7 +403,8 @@ def add_to_playlist(request):
     context = {
         'lagu_artist': lagu_artist,
         'user_playlist': user_playlist,
-        'konten_id': konten_id
+        'konten_id': konten_id,
+        'user': user
     }
 
     return render(request, 'add_to_playlist.html', context)
@@ -403,6 +413,7 @@ def add_to_playlist(request):
 def insert_to_playlist(request):
     conn = get_db_connection()
     cursor = conn.cursor()
+    user = context_user.context_user_getter(request)
 
     if request.method == 'POST':
         user_playlist =  request.POST.get('user_playlist')
@@ -435,6 +446,7 @@ def insert_to_playlist(request):
             'judul_playlist' : judul_playlist,
             'playlist_id' : user_playlist,
             'konten_id' : konten_id,
+            'user': user
         }
 
         try:
@@ -474,6 +486,7 @@ def download(request):
 
     context = {
         'judul' : judul,
+        'user' : user,
         'konten_id' : konten_id
     }
 
@@ -595,25 +608,25 @@ def play(request):
     previous_url = request.META.get('HTTP_REFERER', '/')
     return redirect(previous_url)
 
-def play(request):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    konten_id = request.GET.get('konten_id', None)
-    user = context_user.context_user_getter(request)
-    now = datetime.now()
-    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+# def play(request):
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
+#     konten_id = request.GET.get('konten_id', None)
+#     user = context_user.context_user_getter(request)
+#     now = datetime.now()
+#     timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
 
-    query_insert_song = """
-        INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
-        VALUES (%s, %s, %s)
-    """
+#     query_insert_song = """
+#         INSERT INTO AKUN_PLAY_SONG (email_pemain, id_song, waktu)
+#         VALUES (%s, %s, %s)
+#     """
 
-    cursor.execute(query_insert_song, (user['email'], konten_id, timestamp))
+#     cursor.execute(query_insert_song, (user['email'], konten_id, timestamp))
 
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+#     conn.commit()
+#     cursor.close()
+#     conn.close()
 
-    previous_url = request.META.get('HTTP_REFERER', '/')
-    return redirect(previous_url)
+#     previous_url = request.META.get('HTTP_REFERER', '/')
+#     return redirect(previous_url)
