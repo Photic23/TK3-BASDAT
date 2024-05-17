@@ -101,25 +101,108 @@ def delete_album(request, albumID):
     user = context_user.context_user_getter(request)
     conn = get_db_connection()
     cursor = conn.cursor()
-    print(albumID)
-    cursor.execute("DELETE FROM ALBUM WHERE id=%s", (album_id,))
+
+    cursor.execute("DELETE FROM ALBUM WHERE id=%s", (albumID,))
     conn.commit()
     cursor.close()
     conn.close()
+
     return redirect('kelola-album-artist:show_artist')
 
+def delete_song(request, kontenID):
+    user = context_user.context_user_getter(request)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM KONTEN WHERE id=%s", (kontenID,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect('kelola-album-artist:show_lagu')
+
 def show_create_lagu(request):
+    user = context_user.context_user_getter(request)
+    album_id = request.GET.get('album_title', None)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT judul FROM album WHERE id = %s", (album_id,))
+    album_name = cursor.fetchone()[0]
+
+    cursor.execute("SELECT nama, id, a.email_akun FROM ARTIST A, AKUN AK WHERE ak.email=a.email_akun")
+    artists_name = cursor.fetchall()
+
+    cursor.execute("SELECT nama, id, s.email_akun FROM SONGWRITER S, AKUN AK WHERE ak.email=s.email_akun")
+    songwriters_name = cursor.fetchall()
+
+    cursor.execute("SELECT DISTINCT genre FROM GENRE")
+    genres = cursor.fetchall()
+
+    user_artis_id = ""
+    for artist in artists_name:
+        email = artist[2]
+        if(email == user['email']):
+            user_artis_id = artist[1]
+            break
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
     context = {
+        'judul_album': album_name,
+        'album_id': album_id,
+        'artists_name': artists_name,
+        'songwriters_name': songwriters_name,
+        'genres': genres,
+        'user': user,
+        'user_id': user_artis_id
     }
 
-    return render(request, "create_lagu_artist.html", context)
+    return render(request, "create_lagu.html", context)
 
-def show_create_lagu_songwriter(request):
-    context = {
-    }
+@csrf_exempt
+def form_song(request):
+    user = context_user.context_user_getter(request)
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-    return render(request, "create_lagu_songwriter.html", context)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return HttpResponse(b"Invalid JSON", status=400)
+        
+        album_id = data.get('albumID')
+        artist_name = data.get('artistName')
+        song_name = data.get('songName')
+        songwriters = data.get('songwriters')
+        genres = data.get('genres')
+        durasi = int(data.get('durasi'))
 
+        random_uuid_song = str(uuid.uuid4())
+        today_date = datetime.today().date()
+        formatted_date = today_date.strftime("%Y-%m-%d")
+        cursor.execute("INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi) VALUES (%s, %s, %s, %s, %s)", (random_uuid_song, song_name, formatted_date, str(today_date.year), durasi))
+        conn.commit()
+
+        for genre in genres:
+            cursor.execute("INSERT INTO GENRE (id_konten, genre) VALUES (%s, %s)", (random_uuid_song, genre))
+            conn.commit()
+
+        cursor.execute("INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download) VALUES (%s, %s, %s, 0, 0)", (random_uuid_song, artist_name, album_id))
+        conn.commit()
+
+        for writer in songwriters:
+            cursor.execute("INSERT INTO SONGWRITER_WRITE_SONG (id_songwriter, id_song) VALUES (%s, %s)", (writer, random_uuid_song))
+            conn.commit()
+        
+        cursor.close()
+        conn.close()
+
+        return HttpResponse(b"CREATED", status=201)
+    
+    return HttpResponseNotFound()
 
 def show_list_album(request):
     user = context_user.context_user_getter(request)
@@ -159,13 +242,14 @@ def show_list_album(request):
 
 def show_list_lagu(request):
     album_id = request.GET.get('album_title', None)
+    user = context_user.context_user_getter(request)
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT judul FROM album WHERE id = %s", (album_id,))
     album_name = cursor.fetchone()[0]
 
-    cursor.execute("SELECT k.judul, k.durasi, s.total_play, s.total_download FROM SONG s, KONTEN k WHERE s.id_konten=k.id AND s.id_album = %s", (album_id,))
+    cursor.execute("SELECT k.judul, k.durasi, s.total_play, s.total_download, k.id FROM SONG s, KONTEN k WHERE s.id_konten=k.id AND s.id_album = %s", (album_id,))
     songs = cursor.fetchall()
 
     cursor.close()
@@ -173,7 +257,8 @@ def show_list_lagu(request):
 
     context = {
         'judul_album': album_name,
-        'song_query': songs
+        'song_query': songs,
+        'user': user,
     }
 
     return render(request, "list_lagu.html", context)
