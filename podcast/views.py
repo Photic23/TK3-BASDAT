@@ -8,9 +8,10 @@ import uuid
 import random
 from datetime import date
 from datetime import datetime
+from utils import context_user
 
 # Create your views here.
-def show_detail_podcast(request, user_role, id_podcast):
+def show_detail_podcast(request, id_podcast):
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -152,10 +153,11 @@ def show_podcast_list(request):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-
+    user = context_user.context_user_getter(request)
+    email = user['email']
     jumlah_episodes = [] 
     podcast_id = []
-    cursor.execute("SELECT K.id, K.judul, K.durasi FROM KONTEN K WHERE K.id IN(SELECT id_konten FROM PODCAST WHERE email_podcaster = 'oduboj_ize83@outlook.com')") #TODO: DIRUBAH
+    cursor.execute("SELECT K.id, K.judul, K.durasi FROM KONTEN K WHERE K.id IN(SELECT id_konten FROM PODCAST WHERE email_podcaster = %s)", (email,)) #TODO: DIRUBAH
     podcasts = cursor.fetchall()
     for podcast in podcasts:
         cursor.execute("SELECT COUNT(id_episode) FROM EPISODE WHERE id_konten_podcast=%s", (podcast[0],))
