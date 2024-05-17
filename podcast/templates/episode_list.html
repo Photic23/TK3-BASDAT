@@ -195,31 +195,20 @@
                 <th>Tanggal</th>
                 <th>Action</th>
             </tr>
-            <tr>
-                <td>Subjudul1</td>
-                <td>Lorem Ipsum</td>
-                <td>59 menit</td>
-                <td>18/03/2024</td>
-                <td>
-                    <a class="row-button" href="#">[hapus]</a>
-                </td>
-            </tr>
-            <tr>
-                <td>Subjudul2</td>
-                <td>Lorem Ipsum</td>
-                <td>1 jam 2 menit</td>
-                <td>25/03/2024</td>
-                <td>
-                    <a class="row-button" href="#">[hapus]</a>
-                </td>
-            </tr>
-            <tr>
-                <td>...</td>
-                <td >...</td>
-                <td>...</td>
-                <td >...</td>
-                <td >...</td>
-            </tr>
+            {% for episode in episodes %}
+                <tr>
+                    <td>{{episode.1}}</td>
+                    <td>{{episode.2}}</td>
+                    <td>{{episode.3}} Menit</td>
+                    <td>{{episode.4}}</td>
+                    <td>
+                        <form method="POST" action="{% url 'podcast:hapus_episode' id_podcast=id_podcast id_episode=episode.5 %}">
+                            <input type="hidden" name="anchor_type" value="hapus"/>
+                            <button style="color: #000;" class="row-button" type="submit">[hapus]</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
         </table>
     </div>
 </body>

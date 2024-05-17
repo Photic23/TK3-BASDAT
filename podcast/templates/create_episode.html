@@ -247,18 +247,24 @@
     <a href="#" onclick="window.history.back();" class="marmoot-button">Back</a>
     <h1>Create Episode</h1>
     <div>
+        
         <p>Podcast: Podcast1</p>
 
-        <label for="duration">Judul: </label>
-        <input type="text" id="duration" name="duration">
+        <form method="POST" action="{% url 'podcast:show_create_episode' id_podcast=id_podcast %}">
+            {% csrf_token %}
+            <label for="title">Judul: </label>
+            <input type="text" id="title" name="title">
 
-        <label for="duration">Deskripsi: </label>
-        <input type="text" id="duration" name="duration">
+            <label for="description">Deskripsi: </label>
+            <input type="text" id="description" name="description">
 
-        <label for="duration">Durasi: </label>
-        <input type="text" id="duration" name="duration">
+            <label for="duration">Durasi: </label>
+            <input type="text" id="duration" name="duration">
 
-        <input type="submit" value="Submit">
+            <input type="hidden" id="id_podcast" name="id_podcast" value={{id_podcast}}>
+
+            <input type="submit" value="Submit">
+        </form>
     </div>
 
 

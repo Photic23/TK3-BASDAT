@@ -247,7 +247,7 @@
     <a href="#" onclick="window.history.back();" class="marmoot-button">Back</a>
     <h1>Create Podcast</h1>
     <div>
-        <form method="POST" action="{% url 'podcast:show_podcast_list' %}">
+        <form method="POST" action="{% url 'podcast:create_podcast' %}">
             {% csrf_token %}
             <label for="title">Judul: </label>
             <input type="text" id="title" name="title" required>

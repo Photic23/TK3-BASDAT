@@ -200,11 +200,11 @@
                     <td>{{podcast.3}}</td>
                     <td>{{podcast.2}}</td>
                     <td>
-                        <a class="row-button" href="{% url 'podcast:show_episode_list' %}">[lihat daftar episode]</a>
+                        <a class="row-button" href="{% url 'podcast:show_episode_list' id_podcast=podcast.4 %}">[lihat daftar episode]</a>
                         <br>
-                        <a class="row-button" href="{% url 'podcast:show_create_episode' %}">[tambah episode]</a>
+                        <a class="row-button" href="{% url 'podcast:show_create_episode' id_podcast=podcast.4 %}">[tambah episode]</a>
                         <br>
-                        <a class="row-button" href="#">[hapus]</a>
+                        <a class="row-button" href="{% url 'podcast:hapus_podcast' id_podcast=podcast.4 %}">[hapus]</a>
                     </td>
                 </tr>
             {% endfor %}
