@@ -236,36 +236,77 @@
     <nav class="navbar">
         <a href="#" class="navbar-brand">Marmoot</a>
         <ul class="navbar-nav">
-            <li class="nav-item"><a href="{% url 'main:show_dashboard_podcast' %}" class="nav-link">Dashboard</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Dashboard</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Chart</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Search Bar</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Kelola Playlist</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Langanan Paket</a></li>
-            <li class="nav-item"><a href="{% url 'podcast:show_podcast_list' %}" class="nav-link">Podcast</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Podcast</a></li>
         </ul>
     </nav>
     <a href="#" onclick="window.history.back();" class="marmoot-button">Back</a>
     <h1>Create Podcast</h1>
     <div>
-        <label for="title">Judul: </label>
-        <input type="text" id="title" name="title">
+        <form method="POST" action="">
+            {% csrf_token %}
+            <label for="title">Judul: </label>
+            <input type="text" id="title" name="title">
 
-        <label for="artist">Genre: </label>
-        <div style="display: flex; align-items: center; width: 90%;"> <!-- Adjusted styling for artist section -->
-            <select id="artistDropdown">
-                <option value="artist1">Genre 1</option>
-                <option value="artist2">Genre 2</option>
-                <option value="artist3">Genre 3</option>
-                <option value="artist4">Genre 4</option>
-            </select>
-            <button style="width: 100px;" onclick="addArtist()">Add Genre</button>
-        </div>
-        <input type="text" id="artistInput" name="artist" readonly>
-
-        <label for="duration">Durasi: </label>
-        <input type="text" id="duration" name="duration">
-
-        <input type="submit" value="Submit">
+            <label for="artist">Genre: </label>
+            <div style="display: flex; align-items: center; width: 90%;"> <!-- Adjusted styling for artist section -->
+                <select id="artistDropdown">
+                    <option value="Funk">Funk</option>
+                    <option value="Disco">Disco</option>
+                    <option value="Grunge">Grunge</option>
+                    <option value="Saga">Saga</option>
+                    <option value="House">House</option>
+                    <option value="Emo">Emo</option>
+                    <option value="R&B/Soul">R&B/Soul</option>
+                    <option value="Alternative">Alternative</option>
+                    <option value="Bluegrass">Bluegrass</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Opera">Opera</option>
+                    <option value="Electronic">Electronic</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Classical">Classical</option>
+                    <option value="Gothic">Gothic</option>
+                    <option value="War">War</option>
+                    <option value="Rock">Rock</option>
+                    <option value="R&B">R&B</option>
+                    <option value="World">World</option>
+                    <option value="Trance">Trance</option>
+                    <option value="Heavy Metal">Heavy Metal</option>
+                    <option value="Animation">Animation</option>
+                    <option value="Ambient">Ambient</option>
+                    <option value="Documentary">Documentary</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Art">Art</option>
+                    <option value="Indie">Indie</option>
+                    <option value="Satire">Satire</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="K-Pop">K-Pop</option>
+                    <option value="Hip Hop">Hip Hop</option>
+                    <option value="Blues">Blues</option>
+                    <option value="Rap">Rap</option>
+                    <option value="Bossa Nova">Bossa Nova</option>
+                    <option value="Techno">Techno</option>
+                    <option value="Health">Health</option>
+                    <option value="Food">Food</option>
+                    <option value="Science">Science</option>
+                    <option value="New Age">New Age</option>
+                    <option value="Punk">Punk</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Gospel">Gospel</option>
+                    <option value="Jazz">Jazz</option>
+                    <option value="Crime">Crime</option>
+                </select>
+                <button type="button" style="width: 100px;" onclick="addArtist()">Add Genre</button>
+            </div>
+            <input type="text" id="artistInput" name="artist" readonly>
+            
+            <input type="submit" value="Submit">
+        </form>
     </div>
 
     <script>
@@ -284,6 +325,7 @@
 
             artistInput.value = currentArtists.join(", ");
         }
+        
     </script>
 </body>
 </html>

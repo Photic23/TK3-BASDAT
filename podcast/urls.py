@@ -4,7 +4,7 @@ from podcast.views import show_detail_podcast, show_chart, show_chart_detail, cr
 app_name = 'podcast'
 
 urlpatterns = [
-    path('detail/', show_detail_podcast, name='show_detail_podcast'),
+    path('detail/<str:user_role>/<str:id_podcast>/', show_detail_podcast, name='show_detail_podcast'),
     path('chart/', show_chart, name='show_chart'),
     path('chart-detail/', show_chart_detail, name='show_chart_detail'),
     path('create/', create_podcast, name='create_podcast'),
