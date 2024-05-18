@@ -44,11 +44,11 @@ def hapus_lagu(request):
 
     # Lakukan operasi penghapusan data
     cursor.execute("DELETE FROM PLAYLIST_SONG WHERE id_song = %s", (konten_id,))
-    cursor.execute("""
-            UPDATE USER_PLAYLIST
-            FROM KONTEN
-            WHERE KONTEN.id = %s AND USER_PLAYLIST.id_playlist = %s
-        """, [konten_id, playlist_id])
+    # cursor.execute("""
+    #         UPDATE USER_PLAYLIST
+    #         FROM KONTEN
+    #         WHERE KONTEN.id = %s AND USER_PLAYLIST.id_playlist = %s
+    #     """, [konten_id, playlist_id])
     conn.commit()
 
     cursor.close()
@@ -94,6 +94,7 @@ def add_lagu_playlist(request):
 def tambah_lagu(request):
     conn = get_db_connection()
     cursor = conn.cursor()
+    user = context_user.context_user_getter(request)
 
     if request.method == 'POST':
         playlist_id =  request.POST.get('playlist_id')
@@ -105,7 +106,8 @@ def tambah_lagu(request):
 
         context = {
             'playlist_id' : playlist_id,
-            'judul_lagu' : judul_lagu
+            'judul_lagu' : judul_lagu,
+            'user' : user
         }
 
         try:
