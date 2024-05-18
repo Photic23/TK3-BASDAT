@@ -12,7 +12,7 @@ import uuid
 from psycopg2.errors import UndefinedColumn
 from django.db import DatabaseError
 from django.urls import reverse
-from psycopg2.errors import UniqueViolation
+
 
 def tambah_playlist(request):
     user = context_user.context_user_getter(request)
@@ -116,7 +116,7 @@ def tambah_lagu(request):
             conn.commit()
             cursor.close()
             conn.close()
-        except UniqueViolation:
+        except psycopg2.errors:
             return render(request, 'gagal_add_to_playlist.html', context)
 
         return redirect(f"{reverse('feat_2:detail_playlist')}?playlist_id={playlist_id}")
@@ -464,8 +464,8 @@ def insert_to_playlist(request):
             conn.close()
 
             return render(request, 'berhasil_add.html', context)
-        
-        except UniqueViolation:
+            
+        except Exception:
             return render(request, 'gagal_add.html', context)
     return render(request, 'berhasil_add.html')
 
@@ -505,7 +505,7 @@ def download(request):
         conn.close()
 
         return render(request, 'download.html', context)
-    except UniqueViolation:
+    except Exception:
         return render(request, 'gagal_download.html', context)
 
 def shuffle(request):
