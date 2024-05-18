@@ -61,7 +61,7 @@
                             {{ song.3 }}
                         </td>
                         <td class="px-6 py-4">
-                            <a href="{% url 'feat_2:song_detail' %}">
+                            <a href="{% url 'feat_2:song_detail' %}?konten_id={{ song.4 }}">
                                 <button type="list_song" class="relative inline-flex items-center justify-center p-1 mb-2 me-2 overflow-hidden text-base font-medium text-black rounded-lg group bg-gradient-to-br from-white-600 to-white-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-black dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 border-3 border-black-500">                                
                                     <img src="/static/icon_list.png" alt="List Icon" class="w-5 h-5 text-white me-2">
                                     See details
