@@ -208,6 +208,8 @@ def submit_register_pengguna(request):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    error_message = None
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -225,37 +227,43 @@ def submit_register_pengguna(request):
         if gender.lower() == "male":
             gender_value = 1
 
-        query = """
-        INSERT INTO AKUN (email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(query, (email, password, name, gender_value, tempat_lahir, tanggal_lahir, is_verified, kota_asal))
+        try:
+            query = """
+            INSERT INTO AKUN (email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (email, password, name, gender_value, tempat_lahir, tanggal_lahir, is_verified, kota_asal))
 
-        uuid_pemilik_hak_cipta = str(uuid.uuid4())
-        random_rate = random.randint(100, 5000)
+            uuid_pemilik_hak_cipta = str(uuid.uuid4())
+            random_rate = random.randint(100, 5000)
 
-        target_roles = ["artist", "podcaster", "songwriter"]
+            target_roles = ["artist", "podcaster", "songwriter"]
 
-        if any(role in target_roles for role in roles):
-            cursor.execute("INSERT INTO PEMILIK_HAK_CIPTA (id, rate_royalti) VALUES (%s, %s)", [uuid_pemilik_hak_cipta, random_rate])
-        
-        if 'artist' in roles:
-            uuid_artist = str(uuid.uuid4())
-            cursor.execute("INSERT INTO ARTIST (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", [uuid_artist, email, uuid_pemilik_hak_cipta])
-        elif 'podcaster' in roles:
-            cursor.execute("INSERT INTO PODCASTER (email) VALUES (%s)", [email])
-        elif 'songwriter' in roles:
-            uuid_songwriter = str(uuid.uuid4())
-            cursor.execute("INSERT INTO SONGWRITER (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", [uuid_songwriter, email, uuid_pemilik_hak_cipta])
+            if any(role in target_roles for role in roles):
+                cursor.execute("INSERT INTO PEMILIK_HAK_CIPTA (id, rate_royalti) VALUES (%s, %s)", [uuid_pemilik_hak_cipta, random_rate])
+            
+            if 'artist' in roles:
+                uuid_artist = str(uuid.uuid4())
+                cursor.execute("INSERT INTO ARTIST (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", [uuid_artist, email, uuid_pemilik_hak_cipta])
+            elif 'podcaster' in roles:
+                cursor.execute("INSERT INTO PODCASTER (email) VALUES (%s)", [email])
+            elif 'songwriter' in roles:
+                uuid_songwriter = str(uuid.uuid4())
+                cursor.execute("INSERT INTO SONGWRITER (id, email_akun, id_pemilik_hak_cipta) VALUES (%s, %s, %s)", [uuid_songwriter, email, uuid_pemilik_hak_cipta])
+            
+            conn.commit()
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+        except Exception:
+            conn.rollback()
+            error_message = "Email already exists. Please use a different email."
+            if error_message:
+                context = {'error_message': error_message}
+                return render(request, 'regist_pengguna.html', context)
 
-    context = {
-    }
+        cursor.close()
+        conn.close()
 
-    return redirect(reverse('main:index'))
+        return redirect(reverse('main:index'))
 
 @csrf_exempt
 def submit_register_label(request):
@@ -273,20 +281,29 @@ def submit_register_label(request):
 
         cursor.execute("INSERT INTO PEMILIK_HAK_CIPTA (id, rate_royalti) VALUES (%s, %s)", [uuid_pemilik_hak_cipta, random_rate])
 
-        query = """
-        INSERT INTO LABEL (id, nama, email, password, kontak, id_pemilik_hak_cipta) 
-        VALUES (%s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(query, (uuid_label, name, email, password, contact, uuid_pemilik_hak_cipta))
+        try:
+            query = """
+            INSERT INTO LABEL (id, nama, email, password, kontak, id_pemilik_hak_cipta) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (uuid_label, name, email, password, contact, uuid_pemilik_hak_cipta))
+            conn.commit()
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+        except Exception:
+            conn.rollback()
+            error_message = "Email already exists. Please use a different email."
+            if error_message:
+                context = {'error_message': error_message}
+                return render(request, 'regist_label.html', context)
 
-    context = {
-    }
 
-    return redirect(reverse('main:index'))
+        cursor.close()
+        conn.close()
+
+        context = {
+        }
+
+        return redirect(reverse('main:index'))
 
 
 
