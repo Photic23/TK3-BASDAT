@@ -25,7 +25,7 @@
             margin: 20px auto;
             border-radius: 10px;
             width: 80%;
-            max-width: 400px; /* Adjusted max-width */
+            max-width: 400px;
         }
 
         label {
@@ -59,13 +59,23 @@
         input[type="submit"]:hover {
             background-color: #118038;
         }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <h1>Label Registration</h1>
-    <form action="/main/register_user/submit_register_label/" method="post">
+    <form action="{% url 'main:submit_register_label' %}" method="post">
         {% csrf_token %}
         <div>
+            {% if error_message %}
+                <div class="error">{{ error_message }}</div>
+            {% endif %}
+
             <label for="email">Email:</label>
             <input type="text" id="email" name="email">
 
