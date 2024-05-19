@@ -5,8 +5,9 @@ Django==4.2.11
 gunicorn==22.0.0
 idna==3.7
 packaging==24.0
-psycopg2-binary==2.9.9
+wheel
 psycopg2==2.9.9
+psycopg2-binary==2.9.9
 python-dotenv==1.0.1
 requests==2.31.0
 sqlparse==0.5.0
