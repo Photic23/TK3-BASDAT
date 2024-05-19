@@ -249,7 +249,7 @@
     <h1>Create Episode</h1>
     <div>
         
-        <p>Podcast: Podcast1</p>
+        <p>Podcast: {{judul_podcast.0}}</p>
 
         <form method="POST" action="{% url 'podcast:show_create_episode' id_podcast=id_podcast %}">
             {% csrf_token %}

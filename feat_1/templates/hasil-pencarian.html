@@ -46,7 +46,9 @@
                     <p class="text-sm text-gray-400">{{ podcast.podcaster_name }}</p>
                 </div>
                 <div class="flex flex-col justify-center items-center">
-                    <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                    <a href="{% url 'podcast:show_detail_podcast' id_podcast=podcast.id %}">
+                        <p class="text-xl text-center bg-[#303030] font-bold border rounded-full w-8 aspect-square">i</p>
+                    </a>
                 </div>
             </div>
             {% endfor %}

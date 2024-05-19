@@ -1,4 +1,5 @@
 from django.urls import path
+from podcast import views
 from podcast.views import show_detail_podcast, show_chart, show_chart_detail, create_podcast, show_podcast_list,show_create_episode, show_episode_list, hapus_episode, hapus_podcast
 
 app_name = 'podcast'

@@ -178,6 +178,7 @@
             <li class="nav-item"><a href="{% url 'podcast:show_chart' %}" class="nav-link">Chart</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Kelola Playlist</a></li>
             <li class="nav-item"><a href="{% url 'podcast:show_podcast_list' %}" class="nav-link">Kelola Podcast</a></li>
+            <li class="nav-item"><a href="{% url 'podcast:create_podcast' %}" class="nav-link">Buat Podcast</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Langganan Paket</a></li>
         </ul>
     </nav>
@@ -199,7 +200,7 @@
                 <tr>
                     <td>{{podcast.1}}</td>
                     <td>{{podcast.3}}</td>
-                    <td>{{podcast.2}}</td>
+                    <td>{{podcast.2}} Menit</td>
                     <td>
                         <a class="row-button" href="{% url 'podcast:show_episode_list' id_podcast=podcast.4 %}">[lihat daftar episode]</a>
                         <br>

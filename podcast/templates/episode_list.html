@@ -181,7 +181,7 @@
         </ul>
     </nav>
     <a href="#" onclick="window.history.back();" class="marmoot-button">Back</a>
-    <h1>Podcast1 Episode List</h1>
+    <h1>{{judul_podcast.0}} Episode List</h1>
     <div class="search-container">
         <input type="text" placeholder="Search..." class="search-input">
         <button class="search-button">Search</button>
@@ -201,8 +201,9 @@
                     <td>{{episode.2}}</td>
                     <td>{{episode.3}} Menit</td>
                     <td>{{episode.4}}</td>
-                    <td>
+                    <td
                         <form method="POST" action="{% url 'podcast:hapus_episode' id_podcast=id_podcast id_episode=episode.5 %}">
+                            {% csrf_token %}
                             <input type="hidden" name="anchor_type" value="hapus"/>
                             <button style="color: #000;" class="row-button" type="submit">[hapus]</button>
                         </form>

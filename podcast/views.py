@@ -9,6 +9,7 @@ import random
 from datetime import date
 from datetime import datetime
 from utils import context_user
+from django.urls import reverse
 
 # Create your views here.
 def show_detail_podcast(request, id_podcast):
@@ -90,7 +91,7 @@ def show_chart_detail(request, id_playlist):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT B.nama, temp3.judul, temp3.total_play, temp3.tanggal_rilis, temp3.id FROM AKUN B RIGHT JOIN (SELECT A.email_akun, temp2.judul, temp2.tanggal_rilis, temp2.total_play, temp2.id FROM ARTIST A RIGHT JOIN (SELECT K.judul, K.tanggal_rilis, temp.id_artist, temp.total_play, K.id FROM KONTEN K JOIN (SELECT id_konten, id_artist, total_play FROM SONG WHERE id_konten IN(SELECT id_song FROM PLAYLIST_SONG WHERE id_playlist=%s) ORDER BY total_play DESC) temp ON K.id = temp.id_konten) temp2 ON A.id=temp2.id_artist) temp3 ON B.email = temp3.email_akun ORDER BY temp3.total_play DESC;", (id_playlist,))
+    cursor.execute("SELECT B.nama, temp3.judul, temp3.total_play, temp3.tanggal_rilis, temp3.id FROM AKUN B RIGHT JOIN (SELECT A.email_akun, temp2.judul, temp2.tanggal_rilis, temp2.total_play, temp2.id FROM ARTIST A RIGHT JOIN (SELECT K.judul, K.tanggal_rilis, temp.id_artist, temp.total_play, K.id FROM KONTEN K JOIN (SELECT id_konten, id_artist, total_play FROM SONG WHERE id_konten IN(SELECT id_song FROM PLAYLIST_SONG WHERE id_playlist=%s) ORDER BY total_play DESC) temp ON K.id = temp.id_konten) temp2 ON A.id=temp2.id_artist) temp3 ON B.email = temp3.email_akun WHERE temp3.total_play<>0 ORDER BY temp3.total_play DESC LIMIT 20;", (id_playlist,))
     details = cursor.fetchall()
     id_song = []
     for detail in details:
@@ -202,12 +203,14 @@ def show_create_episode(request, id_podcast):
                 cursor.execute("INSERT INTO EPISODE VALUES('{}', '{}', '{}', '{}', {}, '{}')".format(uuid_konten, id_podcast, judul_episode, deskripsi, duration, currentdate))
                 conn.commit()
         # cursor.execute("INSERT INTO PODCAST VALUES("+uuid_konten+", oduboj_ize83@outlook.com)")        
-
+    cursor.execute("SELECT judul FROM KONTEN WHERE id=%s", (id_podcast,))
+    judul_podcast = cursor.fetchone()
     cursor.close()
     conn.close()
 
     context = {
-        'id_podcast': id_podcast
+        'id_podcast': id_podcast,
+        'judul_podcast': judul_podcast
     }
 
     return render(request, "create_episode.html", context)
@@ -222,6 +225,8 @@ def show_episode_list(request, id_podcast):
     episodes_id = []
     for episode in episodes:
         episodes_id.append((str(episode[0]),))
+    cursor.execute("SELECT judul FROM KONTEN WHERE id=%s", (id_podcast,))
+    judul_podcast = cursor.fetchone()
 
     cursor.close()
     conn.close()
@@ -230,7 +235,8 @@ def show_episode_list(request, id_podcast):
 
     context = {
         'episodes': merged_episodes,
-        'id_podcast': id_podcast
+        'id_podcast': id_podcast,
+        'judul_podcast': judul_podcast
     }
 
     return render(request, "episode_list.html", context)
@@ -248,8 +254,7 @@ def hapus_episode(request, id_episode, id_podcast):
     cursor.close()
     conn.close()
 
-
-    return redirect('../../episode-list/'+id_podcast+'/')
+    return redirect('../../../episode-list/'+id_podcast+'/')
 
 
 def hapus_podcast(request, id_podcast): #TODO TAMBAHIN EMAIL
